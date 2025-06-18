@@ -2,6 +2,7 @@ import { config } from 'dotenv';
 import { expand } from 'dotenv-expand';
 import { createApp } from './lib/create-app';
 import configureOpenAPI from './lib/configure-open-api';
+import extractRoutes from './routes/extract/extract.index';
 import index from './routes/index.route';
 
 expand(config());
@@ -10,6 +11,7 @@ const app = createApp();
 
 const routes = [
     index,
+    extractRoutes
 ]
 
 configureOpenAPI(app);

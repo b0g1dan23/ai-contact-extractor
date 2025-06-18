@@ -1,4 +1,5 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { createSelectSchema } from "drizzle-zod";
 import { v4 as uuidv4 } from "uuid";
 
 const timestamps = {
@@ -21,6 +22,8 @@ export const contactsTable = sqliteTable('contacts_table', {
     ...timestamps
 })
 
+export const contactSelectSchema = createSelectSchema(contactsTable)
+
 export const customFieldsTable = sqliteTable('custom_fields_table', {
     id: text("id", { length: 36 }).primaryKey().$defaultFn(() => uuidv4()),
     label: text("label").notNull(),
@@ -28,3 +31,5 @@ export const customFieldsTable = sqliteTable('custom_fields_table', {
     contact_id: text("contact_id", { length: 36 }).notNull().references(() => contactsTable.id, { onDelete: 'cascade' }),
     ...timestamps
 })
+
+export type Contact = typeof contactsTable.$inferSelect;

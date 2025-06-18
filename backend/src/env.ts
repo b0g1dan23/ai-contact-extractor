@@ -11,6 +11,7 @@ const EnvSchema = z.object({
     DB_URL: z.string().url(),
     ADMIN_USERNAME: z.string().min(1),
     ADMIN_PASSWORD: z.string().min(1),
+    OPENAI_API_KEY: z.string().min(1),
 })
 
 export type envType = z.infer<typeof EnvSchema>;
