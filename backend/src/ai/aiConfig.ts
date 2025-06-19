@@ -21,7 +21,6 @@ Output format should be an array of objects with these fields:
 - location: city, country, or address
 - phone: phone number
 - job_title: person's job title or role
-- notes: any additional relevant information
 - custom_fields: array of {label, value} objects for other information`;
 
 export default openAIClient;

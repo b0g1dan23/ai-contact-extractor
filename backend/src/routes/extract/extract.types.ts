@@ -7,7 +7,6 @@ export const aiOutputSchema = z.object({
     location: z.union([z.string().min(1), z.null()]),
     phone: z.union([z.string().min(1), z.null()]),
     job_title: z.union([z.string().min(1), z.null()]),
-    notes: z.union([z.string(), z.null()]),
     custom_fields: z.array(z.object({
         label: z.string().min(1),
         value: z.string().min(1)

@@ -4,11 +4,13 @@ import extractRoutes from './extract.index';
 import { OK } from '@/helpers/http-status-codes';
 import db from '@/db';
 import { contactsTable, customFieldsTable } from '@/db/schema';
+import { cleanupTestData } from '@/test-setup';
 
 describe('Extract API Database Integration Tests', () => {
-    const app = createTestApp(extractRoutes); beforeEach(async () => {
-        await db.delete(customFieldsTable);
-        await db.delete(contactsTable);
+    const app = createTestApp(extractRoutes);
+
+    beforeEach(async () => {
+        await cleanupTestData();
     });
 
     it('should save extracted contacts to database after successful AI extraction', async () => {
@@ -123,7 +125,6 @@ describe('Extract API Database Integration Tests', () => {
                 expect(contact).toHaveProperty('location');
                 expect(contact).toHaveProperty('phone');
                 expect(contact).toHaveProperty('job_title');
-                expect(contact).toHaveProperty('notes');
                 expect(contact).toHaveProperty('createdAt');
                 expect(contact).toHaveProperty('updatedAt');
 
@@ -162,12 +163,13 @@ describe('Extract API Database Integration Tests', () => {
                 if (apiContact.location) expect(dbContact.location).toBe(apiContact.location);
                 if (apiContact.phone) expect(dbContact.phone).toBe(apiContact.phone);
                 if (apiContact.job_title) expect(dbContact.job_title).toBe(apiContact.job_title);
-                if (apiContact.notes) expect(dbContact.notes).toBe(apiContact.notes);
             }
         } else {
             console.log('AI extraction failed, skipping data consistency test');
         }
-    }); it('should clean up properly between tests', async () => {
+    });
+
+    it('should clean up properly between tests', async () => {
         const firstResponse = await app.request('/extract/text', {
             method: 'POST',
             headers: {
@@ -184,7 +186,9 @@ describe('Extract API Database Integration Tests', () => {
             const contactsAfterCleanup = await db.select().from(contactsTable);
             expect(contactsAfterCleanup.length).toBe(0);
         }
-    }); it('should save custom fields to separate table when contacts have additional data', async () => {
+    });
+
+    it('should save custom fields to separate table when contacts have additional data', async () => {
         const response = await app.request('/extract/text', {
             method: 'POST',
             headers: {
@@ -202,7 +206,6 @@ describe('Extract API Database Integration Tests', () => {
             if (responseData.length > 0) {
                 const apiContact = responseData[0];
 
-                // Check that contact was saved to main table
                 const savedContacts = await db.select().from(contactsTable);
                 expect(savedContacts.length).toBe(1);
 
@@ -211,12 +214,10 @@ describe('Extract API Database Integration Tests', () => {
                 expect(savedContact.name).toBeTruthy();
                 expect(savedContact.email).toBeTruthy();
 
-                // Check if custom fields were detected by AI and saved to custom fields table
                 if (apiContact.custom_fields && apiContact.custom_fields.length > 0) {
                     const savedCustomFields = await db.select().from(customFieldsTable);
                     expect(savedCustomFields.length).toBeGreaterThan(0);
 
-                    // Verify all custom fields are linked to the correct contact
                     savedCustomFields.forEach(field => {
                         expect(field.contact_id).toBe(savedContact.id);
                         expect(field.label).toBeTruthy();
@@ -232,7 +233,9 @@ describe('Extract API Database Integration Tests', () => {
         } else {
             console.log('AI extraction failed, skipping custom fields test');
         }
-    }, 10000); it('should handle contacts with no custom fields gracefully', async () => {
+    }, 10000);
+
+    it('should handle contacts with no custom fields gracefully', async () => {
         const response = await app.request('/extract/text', {
             method: 'POST',
             headers: {
@@ -250,13 +253,10 @@ describe('Extract API Database Integration Tests', () => {
                 const savedContacts = await db.select().from(contactsTable);
                 expect(savedContacts.length).toBeGreaterThanOrEqual(1);
 
-                // Check that custom fields table exists and can be queried
                 const savedCustomFields = await db.select().from(customFieldsTable);
 
-                // If API returned custom fields, they should be saved
                 const apiContact = responseData[0];
                 if (apiContact.custom_fields && apiContact.custom_fields.length > 0) {
-                    // Should have custom fields for this contact
                     const contactCustomFields = savedCustomFields.filter(f =>
                         savedContacts.some(c => c.id === f.contact_id)
                     );

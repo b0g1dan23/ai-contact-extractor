@@ -12,7 +12,15 @@ const EnvSchema = z.object({
     ADMIN_USERNAME: z.string().min(1),
     ADMIN_PASSWORD: z.string().min(1),
     OPENAI_API_KEY: z.string().min(1),
-})
+}).transform((data) => {
+    if (data.NODE_ENV === 'test') {
+        return {
+            ...data,
+            DB_URL: 'file::memory:?cache=shared'
+        };
+    }
+    return data;
+});
 
 export type envType = z.infer<typeof EnvSchema>;
 

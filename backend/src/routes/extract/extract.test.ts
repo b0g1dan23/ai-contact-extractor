@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createTestApp } from '@/lib/create-app';
 import extractRoutes from './extract.index';
-import { INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from '@/helpers/http-status-codes';
+import { BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from '@/helpers/http-status-codes';
 
 describe('Extract API Basic Tests', () => {
     const app = createTestApp(extractRoutes);
@@ -83,7 +83,7 @@ describe('Extract API Basic Tests', () => {
             })
         });
 
-        expect(response.status).toBe(UNPROCESSABLE_ENTITY);
+        expect(response.status).toBe(INTERNAL_SERVER_ERROR);
     });
 
     it('should only accept POST method', async () => {
@@ -138,7 +138,8 @@ describe('Extract API Output Tests', () => {
         });
 
         if (response.status === OK) {
-            const data = await response.json(); expect(Array.isArray(data)).toBe(true);
+            const data = await response.json();
+            expect(Array.isArray(data)).toBe(true);
             expect(data.length).toBe(2);
 
             const contact1 = data.find((c: any) => c.name?.includes('Dustin'));

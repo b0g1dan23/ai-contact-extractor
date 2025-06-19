@@ -4,6 +4,7 @@ import { createApp } from './lib/create-app';
 import configureOpenAPI from './lib/configure-open-api';
 import extractRoutes from './routes/extract/extract.index';
 import index from './routes/index.route';
+import contactsRouter from './routes/contacts/contacts.index';
 
 expand(config());
 
@@ -11,7 +12,8 @@ const app = createApp();
 
 const routes = [
     index,
-    extractRoutes
+    extractRoutes,
+    contactsRouter
 ]
 
 configureOpenAPI(app);
