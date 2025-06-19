@@ -1,0 +1,114 @@
+// =============================================================================
+// SASS VARIABLES
+// =============================================================================
+
+// =============================================================================
+// COLORS
+// =============================================================================
+
+$primary-color: #1A639E;
+$primary-light: rgba($primary-color, 0.1);
+
+$dark-gray-color: #737373;
+$light-gray-color: #f4f4f4;
+
+$black-color: #000;
+$white-color: #fff;
+
+// Text Colors
+$text-color: $dark-gray-color;
+$text-heading-color: $black-color;
+
+// =============================================================================
+// TYPOGRAPHY
+// =============================================================================
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: url('./fonts/SourceSansPro-Regular.ttf') format('truetype');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: url('./fonts/SourceSansPro-Semibold.ttf') format('truetype');
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: url('./fonts/SourceSansPro-Bold.ttf') format('truetype');
+    font-weight: 700;
+}
+
+// Font Families
+$font-family-primary: 'Source Sans Pro', sans-serif;
+
+// Font Sizes
+$font-size-text-desktop: 1.6rem;
+$font-size-h4-desktop: 1.8rem;
+$font-size-h3-desktop: 2rem;
+$font-size-h2-desktop: 2.8rem;
+$font-size-text-mobile: 1.2rem;
+$font-size-h5-mobile: 1.2rem;
+$font-size-h4-mobile: 1.4rem;
+$font-size-h3-mobile: 1.6rem;
+$font-size-h2-mobile: 2rem;
+
+// Font Weights
+$font-weight-regular: 400;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// Line Heights
+$line-height-h2: auto;
+$line-height-100: 1;
+
+// =============================================================================
+// SPACING
+// =============================================================================
+
+$spacing-xs: 0.4rem;
+$spacing-sm: 1rem;
+$spacing-lg: 3rem;
+
+// =============================================================================
+// LAYOUT
+// =============================================================================
+
+// Container Widths
+$container-desktop: 1080px;
+
+// Breakpoints
+$breakpoint-sm: 375px;
+$breakpoint-md: 768px;
+$breakpoint-xl: 1440px;
+
+$border-color: $light-gray-color;
+$border-weight: 1px;
+
+// Border Radius
+$border-radius-sm: 0.7rem;
+$border-radius: 1rem;
+$border-radius-md: 1.2rem;
+
+// =============================================================================
+// SHADOWS
+// =============================================================================
+
+$shadow: 0 10px 15px 0 rgba($dark-gray-color, 0.1);
+
+// Mixins
+@mixin respond-to($breakpoint) {
+    @if $breakpoint =='mobile' {
+        @media screen and (max-width: $breakpoint-sm) {
+            @content;
+        }
+    }
+
+    @if $breakpoint =='tablet' {
+        @media screen and (max-width: $breakpoint-md) {
+            @content;
+        }
+    }
+}
