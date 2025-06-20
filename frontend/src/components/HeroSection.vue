@@ -1,11 +1,6 @@
 <script setup lang="ts">
-/**
- * Hero section component props interface
- */
 interface HeroSectionProps {
-    /** Main title displayed in the hero section */
     title: string;
-    /** Description text displayed below the title */
     description: string;
 }
 

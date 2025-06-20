@@ -1,30 +1,24 @@
-import { provide, inject, type InjectionKey } from 'vue';
-import { useContactExtraction, type Contact, type ContactExtractionState } from '@/composables/useContactExtraction';
+import { provide, inject, type InjectionKey, type Ref, type ComputedRef } from 'vue';
+import { useContactExtraction } from '@/composables/useContactExtraction';
+import type { ContactExtractionState, ContactFilter } from '@/composables/useContactExtraction';
+import type { Contact } from '@/types';
 
-/**
- * Interface for the contact extraction provider
- * Defines all methods and state available through the provider pattern
- */
 export interface ContactExtractionProvider {
-    /** Reactive state containing contacts, loading status, and errors */
     state: ContactExtractionState;
-    /** Extracts contacts from provided text using AI */
+    searchTerm: Ref<string>;
+    filteredContacts: ComputedRef<Contact[]>;
+    activeFilters: Ref<Set<ContactFilter>>;
     extractContacts: (text: string) => Promise<Contact[]>;
-    /** Clears all extracted contacts */
     clearContacts: () => void;
-    /** Removes a specific contact by ID */
     removeContact: (id: string) => void;
+    createContact: (contact: Contact) => Promise<Contact>;
+    toggleFilter: (filterType: ContactFilter) => void;
+    clearFilters: () => void;
+    isFilterActive: (filterType: ContactFilter) => boolean;
 }
 
-/**
- * Injection key for type-safe dependency injection
- */
 export const ContactExtractionKey: InjectionKey<ContactExtractionProvider> = Symbol('contactExtraction');
 
-/**
- * Provider hook - use in parent component to provide contact extraction functionality
- * @returns Contact extraction functionality object
- */
 export const useContactExtractionProvider = () => {
     const contactExtraction = useContactExtraction();
 
@@ -35,7 +29,6 @@ export const useContactExtractionProvider = () => {
 
 /**
  * Consumer hook - use in child components to access contact extraction functionality
- * @returns Contact extraction functionality object
  * @throws Error if used outside of provider context
  */
 export const useContactExtractionConsumer = () => {

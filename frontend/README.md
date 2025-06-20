@@ -5,10 +5,32 @@ A modern Vue 3 application for extracting contact information from text using AI
 ## 🚀 Features
 
 - **AI Contact Extraction**: Extract contacts from meeting notes
+- **Search & Filtering**: Real-time debounced search with filter by email/location
 - **Modern Vue 3**: Built with Composition API and TypeScript
 - **Provider Pattern**: State management with provide/inject
 - **Accessibility**: WCAG compliant with proper ARIA attributes
 - **Animations**: Smooth CSS animations with reduced motion support
+
+## 🛠️ Future Enhancements
+
+The following features and improvements are planned for upcoming releases:
+
+### Core Features
+- [ ] **Backend Integration**: Connect to real AI service for contact extraction
+- [ ] **Contact Management**: Edit, delete, and update existing contacts
+- [ ] **Data Persistence**: Save contacts to database with user authentication
+
+### User Experience
+- [ ] **Keyboard Shortcuts**: Power user shortcuts for common actions
+
+### Technical Improvements
+- [ ] **Error Boundaries**: Graceful error handling and recovery
+- [ ] **Loading States**: Skeleton screens and progress indicators
+- [ ] **Performance**: Virtual scrolling for large contact lists
+
+### Quality Assurance
+- [ ] **Unit Testing**: Comprehensive test suite with Vitest
+- [ ] **E2E Testing**: Automated browser testing with Playwright
 
 ## 🏗️ Architecture
 

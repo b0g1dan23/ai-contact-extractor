@@ -1,0 +1,30 @@
+.p-toast {
+    &-message {
+        &-content {
+            display: flex;
+            gap: $spacing-sm !important;
+            padding: 1rem !important;
+        }
+
+        &-text {
+            display: grid !important;
+            gap: $spacing-sm !important;
+        }
+    }
+
+    &-summary {
+        font-size: $font-size-text-desktop !important;
+
+        @include respond-to('mobile') {
+            font-size: $font-size-text-mobile !important;
+        }
+    }
+
+    &-detail {
+        font-size: 1rem !important;
+
+        @include respond-to('mobile') {
+            font-size: 1rem !important;
+        }
+    }
+}

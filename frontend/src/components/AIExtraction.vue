@@ -1,19 +1,36 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import Button from '@/components/ui/Button.vue';
+import Loader from '@/components/ui/Loader.vue';
 import { useContactExtractionConsumer } from '@/providers/contactExtractionProvider';
+import { useToastNotifications } from '@/utils/toast';
 
 /**
  * AI Extraction component props interface
  */
 interface AIExtractionProps {
-    /** Placeholder text for the textarea input */
     placeholder?: string;
 }
+
+const isMobile = ref<boolean>(false);
+
+const checkMobile = () => {
+    isMobile.value = window.innerWidth <= 375;
+};
+
+onMounted(() => {
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+})
+
+onUnmounted(() => {
+    window.removeEventListener('resize', checkMobile);
+})
 
 const props = withDefaults(defineProps<AIExtractionProps>(), {
     placeholder: 'Today, I had an interview with Dustin & Andrei from HeyGov, their emails are dustin@heygov.com andrei@heygov.com'
 });
+const { showSuccessToast, showErrorToast } = useToastNotifications();
 
 const { extractContacts, state } = useContactExtractionConsumer();
 const aiText = ref<string>('');
@@ -23,8 +40,10 @@ const handleExtract = async () => {
         try {
             await extractContacts(aiText.value);
             aiText.value = '';
+            showSuccessToast('Contacts extracted successfully!', 'Extraction Success');
         } catch (error) {
             console.error('Failed to extract contacts:', error);
+            showErrorToast('Failed to extract contacts. Please try again.', 'Extraction Error');
         }
     }
 };
@@ -34,7 +53,8 @@ const handleExtract = async () => {
     <div class="extraction">
         <textarea v-model="aiText" rows="3" class="extraction__textarea" :placeholder="props.placeholder" />
         <Button @click="handleExtract" :disabled="!aiText.trim() || state.isLoading" variant="primary">
-            {{ state.isLoading ? 'Extracting...' : '+' }}
+            <Loader v-if="state.isLoading" size="small" />
+            <span v-else class="btn__span">{{ isMobile ? 'Extract contacts with AI' : "+" }}</span>
         </Button>
     </div>
 </template>
@@ -75,6 +95,15 @@ const handleExtract = async () => {
             font-size: $font-size-text-mobile;
             padding: 1rem;
         }
+    }
+}
+
+.btn__span {
+    color: $white-color;
+    font-size: $font-size-h3-desktop;
+
+    @include respond-to('mobile') {
+        font-size: $font-size-h4-desktop;
     }
 }
 </style>

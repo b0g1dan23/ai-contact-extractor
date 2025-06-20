@@ -1,24 +1,17 @@
 <script lang="ts" setup>
-/**
- * Button component props interface
- */
 interface ButtonProps {
-    /** Whether the button is disabled */
     disabled?: boolean;
-    /** HTML button type attribute */
     type?: 'button' | 'submit' | 'reset';
+    variant?: 'primary' | 'outline';
 }
 
 const props = withDefaults(defineProps<ButtonProps>(), {
     disabled: false,
-    type: 'button'
+    type: 'button',
+    variant: 'primary'
 });
 
-/**
- * Button component emits interface
- */
 const emit = defineEmits<{
-    /** Emitted when button is clicked */
     click: [event: MouseEvent];
 }>();
 
@@ -32,6 +25,7 @@ const handleClick = (event: MouseEvent) => {
 <template>
     <button :type="props.type" :disabled="props.disabled" :class="[
         'btn',
+        `btn-${props.variant}`,
         { 'btn-disabled': props.disabled }
     ]" @click="handleClick">
         <span class="btn__content">
@@ -40,6 +34,8 @@ const handleClick = (event: MouseEvent) => {
     </button>
 </template>
 <style lang="scss" scoped>
+@use 'sass:color';
+
 .btn {
     border-radius: .4rem;
     background-color: $primary-color;
@@ -49,9 +45,41 @@ const handleClick = (event: MouseEvent) => {
     cursor: pointer;
     transition: all 0.3s ease;
     transform: translateY(0);
+    white-space: nowrap;
+
+    & span {
+        font-size: $font-size-h3-desktop;
+        font-weight: $font-weight-bold;
+        color: $white-color;
+    }
+
+    &-outline {
+        background-color: $white-color;
+        border: 1px solid $primary-color;
+
+        & span {
+            color: $primary-color;
+            font-size: $font-size-text-desktop;
+            font-weight: $font-weight-regular;
+
+            @include respond-to('mobile') {
+                font-size: $font-size-text-mobile;
+            }
+        }
+    }
+
+    &-primary {
+        &:hover:not(:disabled) {
+            background-color: color.scale($primary-color, $lightness: -10%);
+        }
+
+        &:active:not(:disabled) {
+            background-color: color.scale($primary-color, $lightness: -15%);
+            transition: all 0.1s ease;
+        }
+    }
 
     &:hover:not(:disabled) {
-        background-color: darken($primary-color, 10%);
         transform: translateY(-2px);
         box-shadow: 0 8px 20px rgba($primary-color, 0.3);
     }
@@ -59,13 +87,7 @@ const handleClick = (event: MouseEvent) => {
     &:active:not(:disabled) {
         transform: translateY(1px) scale(0.98);
         box-shadow: 0 2px 8px rgba($primary-color, 0.4);
-        background-color: darken($primary-color, 15%);
         transition: all 0.1s ease;
-    }
-
-    & span {
-        font-size: $font-size-h3-desktop;
-        font-weight: $font-weight-bold;
     }
 
     &__content {

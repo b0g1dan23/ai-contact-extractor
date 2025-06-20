@@ -1,15 +1,8 @@
 <script lang="ts" setup>
-/**
- * Card component props interface
- */
 interface CardProps {
-    /** Card heading text */
     heading: string;
-    /** Card description/paragraph text */
     paragraph: string;
-    /** Path to the card icon image */
     icon: string;
-    /** Whether the card is disabled */
     disabled?: boolean;
 }
 
@@ -20,14 +13,17 @@ const props = withDefaults(defineProps<CardProps>(), {
 
 <template>
     <div class="card" :class="{ 'card-disabled': props.disabled }" role="article" :aria-disabled="props.disabled">
-        <div class="card__top">
-            <div class="card__icon">
-                <img :src="props.icon" :alt="`${props.heading} icon`" loading="lazy" />
+        <div class="card__header">
+            <div class="card__top">
+                <div class="card__icon">
+                    <img :src="props.icon" :alt="`${props.heading} icon`" loading="lazy" />
+                </div>
+                <div class="card__text">
+                    <h3>{{ props.heading }}</h3>
+                    <p>{{ props.paragraph }}</p>
+                </div>
             </div>
-            <div class="card__text">
-                <h3>{{ props.heading }}</h3>
-                <p>{{ props.paragraph }}</p>
-            </div>
+            <slot name="additional"></slot>
         </div>
         <div class="card__content">
             <slot></slot>
@@ -121,6 +117,12 @@ const props = withDefaults(defineProps<CardProps>(), {
             opacity: 0;
             transform: translateX(-30px);
         }
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     @keyframes textSlideIn {
