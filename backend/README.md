@@ -117,7 +117,10 @@ ADMIN_PASSWORD=your-super-secret-password
 | `GET` | `/reference` | Interactive API documentation |
 | `GET` | `/api/v1` | Welcome screen |
 | `POST` | `/api/v1/extract/text` | **Extract contacts from text** |
-| `GET` | `/api/v1/contacts` | Get all contacts ( to be improved ) |
+| `GET` | `/api/v1/contacts` | Get all contacts |
+| `POST` | `/api/v1/contacts` | Create a new contact |
+| `PUT` | `/api/v1/contacts/:id` | Update an existing contact |
+| `DELETE` | `/api/v1/contacts/:id` | Delete a contact |
 
 ### Extract Contacts
 
@@ -148,7 +151,94 @@ ADMIN_PASSWORD=your-super-secret-password
 **Validation Rules:**
 - Text is required (1-10,000 characters)
 - Content-Type must be `application/json`
-- At least one contact must have name or email
+- **At least one contact must have name or email** (enforced at database level)
+- **No legacy fields**: `notes` field has been removed from all schemas
+- **Custom fields support**: Dynamic key-value pairs for additional contact data
+
+### Contact Management
+
+#### Get All Contacts
+**Endpoint:** `GET /api/v1/contacts`
+
+**Response:**
+```json
+[
+  {
+    "id": "uuid-here",
+    "name": "John Doe",
+    "email": "john.doe@techcorp.com",
+    "phone": "+1-555-123-4567", 
+    "company": "TechCorp",
+    "job_title": "Software Engineer",
+    "location": "San Francisco",
+    "createdAt": 1640995200000,
+    "updatedAt": 1640995200000,
+    "custom_fields": [
+      {
+        "id": "field-uuid",
+        "label": "LinkedIn",
+        "value": "https://linkedin.com/in/johndoe",
+        "contact_id": "uuid-here",
+        "createdAt": 1640995200000,
+        "updatedAt": 1640995200000
+      }
+    ]
+  }
+]
+```
+
+#### Create New Contact
+**Endpoint:** `POST /api/v1/contacts`
+
+**Request Body:**
+```json
+{
+  "name": "Jane Smith",
+  "email": "jane.smith@example.com",
+  "phone": "+1-555-987-6543",
+  "company": "StartupCorp",
+  "job_title": "Product Manager",
+  "location": "New York",
+  "custom_fields": [
+    {
+      "label": "Twitter",
+      "value": "@janesmith"
+    },
+    {
+      "label": "Department",
+      "value": "Product"
+    }
+  ]
+}
+```
+
+**Validation Rules:**
+- **At least one of `name` or `email` is required**
+- `email` must be valid email format (if provided)
+- `phone` must match pattern `^\+?[0-9\s-]+$` (if provided)
+- `custom_fields` array is optional
+- Each custom field must have `label` and `value` (both required)
+
+#### Update Contact
+**Endpoint:** `PUT /api/v1/contacts/:id`
+
+**Request Body:** (All fields optional)
+```json
+{
+  "name": "Jane Smith Updated",
+  "company": "NewCorp"
+}
+```
+
+#### Delete Contact
+**Endpoint:** `DELETE /api/v1/contacts/:id`
+
+**Response:**
+```json
+{
+  "msg": "Contact deleted successfully"
+}
+```
 
 ## 🏗️ Project Structure
 
@@ -161,12 +251,16 @@ src/
 ├── ai/
 │   └── aiConfig.ts     # OpenAI client configuration
 ├── routes/
-│   └── extract/        # Contact extraction endpoints
-│       ├── extract.handlers.ts    # Route handlers
-│       ├── extract.routes.ts      # Route definitions
-│       ├── extract.types.ts       # Type schemas
-│       ├── extract.index.ts       # Route exports
-│       └── extract.test.ts        # Comprehensive tests
+│   ├── extract/        # Contact extraction endpoints
+│   │   ├── extract.handlers.ts    # Route handlers
+│   │   ├── extract.routes.ts      # Route definitions
+│   │   ├── extract.types.ts       # Type schemas
+│   │   ├── extract.index.ts       # Route exports
+│   │   └── extract.test.ts        # Comprehensive tests
+│   └── contacts/       # CRUD contact management
+│       ├── contacts.handlers.ts   # CRUD route handlers
+│       ├── contacts.routes.ts     # CRUD route definitions
+│       └── contacts.index.ts      # Route exports
 ├── db/
 │   ├── index.ts        # Database connection
 │   ├── schema.ts       # Database schema definitions
@@ -259,9 +353,51 @@ bun test --coverage
 ## 🛡️ Security & Validation
 
 - **Input Validation**: All requests validated with Zod schemas
+- **Database Constraints**: `name OR email` constraint enforced at database level
 - **AI Output Validation**: OpenAI responses validated against strict schemas
-- **Error Handling**: Structured error responses with proper HTTP status codes
+- **Comprehensive Error Handling**: 
+  - ✅ Validation errors with detailed messages
+  - ✅ Database constraint violations  
+  - ✅ Network and AI service failures
+  - ✅ Proper HTTP status codes (200, 422, 500)
 - **CORS**: Configurable cross-origin resource sharing
+- **Type Safety**: End-to-end TypeScript with runtime validation
+- **Schema Evolution**: Clean removal of legacy fields (`notes` removed)
+
+## 🔧 Error Handling
+
+The API provides structured error responses:
+
+**Validation Errors (422):**
+```json
+{
+  "success": false,
+  "error": {
+    "issues": [
+      {
+        "code": "invalid_type",
+        "path": ["email"],
+        "message": "Required"
+      }
+    ],
+    "name": "ZodError"
+  }
+}
+```
+
+**Business Logic Errors (422):**
+```json
+{
+  "error": "At least one of name or email must be provided"
+}
+```
+
+**Server Errors (500):**
+```json
+{
+  "error": "Failed to create contact"
+}
+```
 
 ## 🚦 Status
 
@@ -271,11 +407,15 @@ bun test --coverage
 - ✅ Modern TypeScript backend with Bun + Hono framework
 - ✅ OpenAI GPT-4.1 integration with structured outputs
 - ✅ Complete contact extraction API (`POST /extract/text`)
+- ✅ **Full CRUD contact management** (`GET`, `POST`, `PUT`, `DELETE /contacts`)
 - ✅ Database integration with automatic contact persistence
 - ✅ Custom fields support with proper relationships
+- ✅ **Database-level constraints** (name OR email required)
+- ✅ **Comprehensive error handling** with proper HTTP status codes
+- ✅ **Schema cleanup** - removed legacy `notes` field everywhere
 - ✅ Comprehensive Zod validation and type safety
 - ✅ OpenAPI documentation with Scalar UI
-- ✅ **Lightning-fast in-memory testing** (21 comprehensive tests)
+- ✅ **Lightning-fast in-memory testing** (21+ comprehensive tests)
 - ✅ Robust error handling and structured logging
 - ✅ Clean, production-ready codebase (100% self-documenting)
 - ✅ CI/CD ready with zero file dependencies
@@ -288,8 +428,9 @@ bun test --coverage
 
 **💡 Future Enhancements:**
 - 📊 Authentication and rate limiting
-- ⚙️ Manual contact management endpoints
 - 📈 Analytics and usage metrics
+- � Advanced search and filtering for contacts
+- 📤 Bulk contact import/export functionality
 
 ## 🤝 Contributing
 

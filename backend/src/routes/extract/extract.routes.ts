@@ -9,7 +9,7 @@ export const extractFromTextRoute = createRoute({
     method: "post",
     summary: "Extract contact informations from text",
     description: "Extract contact informations from text",
-    tags: ["Extraction"],
+    tags: ["AI Extraction"],
     request: {
         body: jsonContent(z.object({
             text: z.string().min(1, "Text is required").max(10000, "Text is too long")
