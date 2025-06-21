@@ -40,6 +40,11 @@ const handleExtract = async () => {
     if (aiText.value.trim()) {
         try {
             await extractContacts(aiText.value);
+
+            if (state.error) {
+                showErrorToast(state.error, 'Extraction Error');
+                return;
+            }
             aiText.value = '';
             showSuccessToast('Contacts extracted successfully!', 'Extraction Success');
         } catch (error) {

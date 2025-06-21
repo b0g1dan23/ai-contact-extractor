@@ -57,6 +57,11 @@ const handleSubmit = async () => {
         Object.assign(inputData, { ...initialInputData });
         inputData.custom_fields = [];
 
+        if (state.error) {
+            showErrorToast(state.error, 'Creation Error');
+            return;
+        }
+
         showSuccessToast('Contact added successfully!', 'Success');
     } catch (error) {
         showErrorToast('Please fill in all required fields correctly.', 'Validation Error');

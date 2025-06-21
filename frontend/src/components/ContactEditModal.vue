@@ -1,134 +1,122 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import type { Contact } from '@/types';
 import locationIcon from '@/assets/icons/Location.svg';
 import phoneIcon from "@/assets/icons/phone.svg";
 import emailIcon from '@/assets/icons/mail.svg';
 import suitcaseIcon from '@/assets/icons/suitcase.svg';
 import hashtagIcon from "@/assets/icons/hashtag.svg"
-import editIcon from "@/assets/icons/Edit.svg"
-import trashIcon from "@/assets/icons/Trash.svg"
-import ContactEditModal from '@/components/ContactEditModal.vue';
+import Modal from './ui/Modal.vue';
+import { reactive } from 'vue';
+import Button from './ui/Button.vue';
+import Loader from './ui/Loader.vue';
 import { useContactOperationsConsumer } from '@/providers/contactOperationsProvider';
-import { useToastNotifications } from '@/utils/toast';
 
-type ContactItemProps = {
-    company?: string;
-    location?: string;
-    phone?: string;
-    job_title?: string;
-    custom_fields: Array<{
-        label: string;
-        value: string;
-    }>;
-} & (
-        | { name: string; email?: string }
-        | { email: string; name?: string }
-    );
+const { updateContact, state } = useContactOperationsConsumer();
 
-const isOpened = ref<boolean>(false);
-const props = defineProps<{ contact: ContactItemProps, index: number }>();
-const modalOpened = ref<boolean>(false);
-const { removeContact } = useContactOperationsConsumer();
-const { showErrorToast, showSuccessToast } = useToastNotifications();
+const emit = defineEmits<{
+    handleClose: [];
+}>();
 
-const initial = computed(() => {
-    if (props.contact.name) return props.contact.name.charAt(0);
-    else if (props.contact.email) return props.contact.email.charAt(0);
-    else return '';
-})
+const props = defineProps<{
+    contact: Contact;
+    initial: string;
+}>();
 
-const handleToggleModal = () => {
-    modalOpened.value = !modalOpened.value;
-}
+const editedContact = reactive<Contact>({ ...props.contact });
 
-const handleRemoveContact = async () => {
-    const deletionResult = removeContact(props.index);
-
-    if (deletionResult.success) {
-        showSuccessToast('Contact removed successfully!', 'Deletion Success');
-    } else {
-        showErrorToast(deletionResult.error || 'Failed to remove contact. Please try again.', 'Deletion Error');
+const handleUpdateContact = async () => {
+    try {
+        await updateContact(editedContact, 1);
+        emit('handleClose');
+    } catch (error) {
+        console.error('Failed to update contact:', error);
     }
 };
 </script>
 <template>
-    <ContactEditModal v-if="modalOpened" v-on:handle-close="handleToggleModal" :contact="props.contact"
-        :initial="initial" />
-    <div class="item">
-        <div class="item__header" @click="isOpened = !isOpened">
-            <div class="item__header__text">
-                <div class="item__avatar">
-                    <span class="item__avatar__span">
-                        {{ initial }}
-                    </span>
-                </div>
-                <div class="item__text">
-                    <h3>{{ props.contact.name ? props.contact.name : props.contact.email }}</h3>
-                    <p>{{ props.contact.company ? props.contact.company : "" }}</p>
+    <Modal v-on:handle-close="emit('handleClose')" title="Edit Contact">
+        <div class="item">
+            <div class="item__header">
+                <div class="item__header__text">
+                    <div class="item__avatar">
+                        <span class="item__avatar__span">
+                            {{ initial }}
+                        </span>
+                    </div>
+                    <div class="item__text">
+                        <input type="text" name="name" class="input__h3" v-model="editedContact.name" />
+                        <input type="text" name="company" v-model="editedContact.company" />
+                    </div>
                 </div>
             </div>
-            <div class="item__actions">
-                <button class="item__actions__action" @click.stop="handleToggleModal">
-                    <img :src="editIcon" alt="Edit icon" class="item__actions__action-edit" />
-                </button>
-                <button class="item__actions__action" @click.stop="handleRemoveContact">
-                    <img :src="trashIcon" alt="Trash icon" class="item__actions__action-delete" />
-                </button>
-            </div>
-        </div>
-        <Transition name="expand">
-            <div class="item__content" v-if="isOpened">
-                <div class="item__info"
-                    v-if="props.contact.email || props.contact.location || props.contact.phone || props.contact.job_title || props.contact.custom_fields.length">
-                    <div class="item__info__card" v-if="props.contact.location">
+            <div class="item__content">
+                <div class="item__info">
+                    <div class="item__info__card">
                         <div class="item__info__icon">
                             <img :src="locationIcon" alt="location icon" />
                         </div>
-                        <span>{{ props.contact.location }}</span>
+                        <input type="text" name="location" v-model="editedContact.location" />
                     </div>
-                    <div class="item__info__card" v-if="props.contact.phone">
+                    <div class="item__info__card">
                         <div class="item__info__icon">
                             <img :src="phoneIcon" alt="phone icon" />
                         </div>
-                        <span>{{ props.contact.phone }}</span>
+                        <input type="text" name="phone" v-model="editedContact.phone" />
                     </div>
-                    <div class="item__info__card" v-if="props.contact.email">
+                    <div class="item__info__card">
                         <div class="item__info__icon">
                             <img :src="emailIcon" alt="email icon" />
                         </div>
-                        <span>{{ props.contact.email }}</span>
+                        <input type="text" name="email" v-model="editedContact.email" />
                     </div>
-                    <div class="item__info__card" v-if="props.contact.job_title">
+                    <div class="item__info__card">
                         <div class="item__info__icon">
                             <img :src="suitcaseIcon" alt="suitcase icon" />
                         </div>
-                        <span>{{ props.contact.job_title }}</span>
+                        <input type="text" name="job_title" v-model="editedContact.job_title" />
                     </div>
                 </div>
-                <div class="custom" v-if="props.contact.custom_fields.length">
+                <div class="custom" v-if="editedContact.custom_fields.length">
                     <h3>Custom fields</h3>
                     <div class="custom__grid">
                         <div class="item__info__card item__info__card-custom"
-                            v-for="(custom_field, index) in props.contact.custom_fields" :key="index">
+                            v-for="(custom_field, index) in editedContact.custom_fields" :key="index">
                             <div class="item__info__icon">
                                 <img :src="hashtagIcon" alt="hashtag icon" />
                             </div>
                             <div class="item__info__text">
-                                <span class="item__label">{{ custom_field.label }}</span>
-                                <span class="item__value">{{ custom_field.value }}</span>
+                                <input type="text" class="item__label" name="custom_label"
+                                    v-model="custom_field.label" />
+                                <input type="text" class="item__value" name="custom_value"
+                                    v-model="custom_field.value" />
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </Transition>
-    </div>
+            <Button @click="handleUpdateContact" :disabled="state.isLoading">
+                <Loader v-if="state.isLoading" />
+                <span v-else class="btn__span">Update Contact</span>
+            </Button>
+        </div>
+    </Modal>
 </template>
 <style lang="scss" scoped>
+.input__h3 {
+    font-size: $font-size-h3-desktop;
+    font-weight: $font-weight-bold;
+    color: $black-color !important;
+}
+
+.btn__span {
+    font-size: $font-size-h3-desktop;
+    font-weight: $font-weight-bold;
+    color: $white-color !important;
+}
+
 .item {
     padding: 1rem;
     border-radius: $border-radius-sm;
-    border: 1px solid $dark-gray-color;
     display: grid;
     gap: $spacing-sm;
 
@@ -137,13 +125,19 @@ const handleRemoveContact = async () => {
         align-items: center;
         justify-content: space-between;
 
-        cursor: pointer;
-
         &__text {
             display: flex;
             align-items: center;
             gap: $spacing-sm;
         }
+    }
+
+    & input {
+        background-color: transparent;
+        border: none;
+        color: $dark-gray-color;
+        font-weight: $font-weight-semibold;
+        padding: .2rem .4rem;
     }
 
     &__actions {
@@ -265,30 +259,5 @@ const handleRemoveContact = async () => {
             grid-template-columns: 1fr;
         }
     }
-}
-
-.expand-enter-active,
-.expand-leave-active {
-    transition: all 0.3s ease;
-    overflow: hidden;
-}
-
-.expand-enter-from {
-    max-height: 0;
-    opacity: 0;
-    transform: translateY(-10px);
-}
-
-.expand-leave-to {
-    max-height: 0;
-    opacity: 0;
-    transform: translateY(-10px);
-}
-
-.expand-enter-to,
-.expand-leave-from {
-    max-height: 500px;
-    opacity: 1;
-    transform: translateY(0);
 }
 </style>

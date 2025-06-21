@@ -8,7 +8,7 @@ export interface ContactOperationsProvider {
     extractContacts: (text: string) => Promise<ContactOperationResult>;
     createContact: (contact: Contact) => Promise<ContactOperationResult>;
     removeContact: (id: number) => ContactOperationResult;
-    clearContacts: () => void;
+    updateContact: (contact: Contact, contactID: number) => Promise<ContactOperationResult>;
 }
 
 export const ContactOperationsKey: InjectionKey<ContactOperationsProvider> = Symbol('contactOperations');

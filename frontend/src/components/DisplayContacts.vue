@@ -55,7 +55,7 @@ const dismissError = () => {
                 <span>Adding contact...</span>
             </div>
 
-            <ContactItem v-for="(contact, index) in filteredContacts" :key="index" :contact="contact" />
+            <ContactItem v-for="(contact, index) in filteredContacts" :key="index" :contact="contact" :index="index" />
         </div>
 
         <div v-else class="empty-state">

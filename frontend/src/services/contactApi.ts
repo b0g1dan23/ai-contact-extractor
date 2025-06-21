@@ -49,7 +49,7 @@ const mockContacts: Contact[] = [
     }
 ];
 
-const simulateApiCall = async <T>(data: T, delay: number = 1500, failureRate: number = 0.5): Promise<T> => {
+const simulateApiCall = async <T>(data: T, delay: number = 1500, failureRate: number = 0.05): Promise<T> => {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             if (Math.random() < failureRate) {
@@ -97,7 +97,7 @@ export class ContactApiService {
         return result;
     }
 
-    static async updateContact(contact: Contact): Promise<Contact> {
+    static async updateContact(contact: Contact, contactID: number): Promise<Contact> {
         const result = await simulateApiCall(contact, 1000);
         return result;
     }
