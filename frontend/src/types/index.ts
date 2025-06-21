@@ -29,6 +29,23 @@ export const ContactWithIdSchema = ContactSchema.and(z.object({
     id: z.string().min(1, 'ID is required'),
 }));
 
+export interface ContactExtractionState {
+    isLoading: boolean;
+    contacts: Contact[];
+    error: string | null;
+}
+
+export enum ContactFilter {
+    HAS_EMAIL = 'hasEmail',
+    HAS_LOCATION = 'hasLocation'
+}
+
+export interface ContactOperationResult {
+    success: boolean;
+    data?: Contact | Contact[];
+    error?: string;
+}
+
 export type CustomField = z.infer<typeof CustomFieldSchema>;
 export type Contact = z.infer<typeof ContactSchema>;
 export type ContactWithId = z.infer<typeof ContactWithIdSchema>;

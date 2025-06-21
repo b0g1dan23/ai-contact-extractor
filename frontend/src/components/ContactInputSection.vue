@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import Card from '@/components/Card.vue';
 
-/**
- * Contact section component props interface.
- * This interface defines the properties for the ContactSection component,
- * including the card heading, paragraph, and icon.
- */
 export interface ContactInputSectionProps {
     cardHeading: string;
     cardParagraph: string;

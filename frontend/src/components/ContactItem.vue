@@ -205,7 +205,6 @@ const initial = computed(() => {
     }
 }
 
-// Transition styles
 .expand-enter-active,
 .expand-leave-active {
     transition: all 0.3s ease;
@@ -226,7 +225,7 @@ const initial = computed(() => {
 
 .expand-enter-to,
 .expand-leave-from {
-    max-height: 500px; // Adjust based on your content height
+    max-height: 500px;
     opacity: 1;
     transform: translateY(0);
 }

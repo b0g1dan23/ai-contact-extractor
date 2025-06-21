@@ -1,8 +1,13 @@
 <script lang="ts" setup>
 import Search from './ui/Search.vue';
 import ContactItem from './ContactItem.vue';
-import { useContactExtractionConsumer } from '@/providers/contactExtractionProvider';
-const { filteredContacts } = useContactExtractionConsumer();
+import { useContactFilteringConsumer } from '@/providers/contactFilteringProvider';
+import { useContactOperationsConsumer } from '@/providers/contactOperationsProvider';
+import Loader from './ui/Loader.vue';
+import Button from './ui/Button.vue';
+
+const { filteredContacts } = useContactFilteringConsumer();
+const { state, loadContacts } = useContactOperationsConsumer();
 
 const smoothScrollTo = (elementId: string) => {
     const element = document.getElementById(elementId);
@@ -14,33 +19,64 @@ const smoothScrollTo = (elementId: string) => {
         });
     }
 };
+
+const retryLoading = async () => {
+    await loadContacts();
+};
+
+const dismissError = () => {
+    state.error = null;
+};
 </script>
 <template>
     <div class="contacts">
         <Search />
-        <div class="contacts__list">
-            <ContactItem v-if="filteredContacts.length" v-for="(contact, index) in filteredContacts" :key="index"
-                :contact="contact" />
-            <div v-else class="empty-state">
-                <div class="empty-state__animation">
-                    <div class="empty-state__circle">
-                        <div class="empty-state__inner-circle"></div>
-                        <div class="empty-state__pulse"></div>
-                    </div>
-                    <div class="empty-state__floating-icons">
-                        <span class="floating-icon">👤</span>
-                        <span class="floating-icon">📧</span>
-                        <span class="floating-icon">📞</span>
-                    </div>
+
+        <div v-if="state.error && filteredContacts.length === 0" class="error">
+            <h3 class="error__title">Oops! Something went wrong</h3>
+            <p class="error__message">{{ state.error }}</p>
+            <Button @click="retryLoading" variant="outline">Try again!</Button>
+        </div>
+
+        <div v-else-if="state.isLoading && filteredContacts.length === 0" class="loading-state">
+            <Loader />
+            <p>Loading your contacts...</p>
+        </div>
+
+        <div v-else-if="filteredContacts.length > 0" class="contacts__list">
+            <div v-if="state.error" class="operation-error">
+                <span class="operation-error__icon">⚠️</span>
+                <span class="operation-error__message">{{ state.error }}</span>
+                <button class="operation-error__dismiss" @click="dismissError">✕</button>
+            </div>
+
+            <div v-if="state.isLoading" class="inline-loading">
+                <Loader size="small" />
+                <span>Adding contact...</span>
+            </div>
+
+            <ContactItem v-for="(contact, index) in filteredContacts" :key="index" :contact="contact" />
+        </div>
+
+        <div v-else class="empty-state">
+            <div class="empty-state__animation">
+                <div class="empty-state__circle">
+                    <div class="empty-state__inner-circle"></div>
+                    <div class="empty-state__pulse"></div>
                 </div>
-                <div class="empty-state__content">
-                    <h3>No contacts yet</h3>
-                    <p>Your contact list is waiting to be filled with amazing connections!</p>
-                    <div class="empty-state__suggestions">
-                        <button class="suggestion" @click="smoothScrollTo('ai-extraction')">✨ Extract from
-                            text</button>
-                        <button class="suggestion" @click="smoothScrollTo('manual-entry')">➕ Add manually</button>
-                    </div>
+                <div class="empty-state__floating-icons">
+                    <span class="floating-icon">👤</span>
+                    <span class="floating-icon">📧</span>
+                    <span class="floating-icon">📞</span>
+                </div>
+            </div>
+            <div class="empty-state__content">
+                <h3>No contacts yet</h3>
+                <p>Your contact list is waiting to be filled with amazing connections!</p>
+                <div class="empty-state__suggestions">
+                    <button class="suggestion" @click="smoothScrollTo('ai-extraction')">✨ Extract from
+                        text</button>
+                    <button class="suggestion" @click="smoothScrollTo('manual-entry')">➕ Add manually</button>
                 </div>
             </div>
         </div>
@@ -184,6 +220,78 @@ const smoothScrollTo = (elementId: string) => {
             }
         }
     }
+}
+
+.loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: $spacing-sm;
+    padding: 2rem 0;
+}
+
+.inline-loading {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: $spacing-sm;
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: $border-radius;
+    color: $primary-color;
+    font-size: 0.9rem;
+    margin-bottom: $spacing-sm;
+
+    span {
+        font-weight: 500;
+    }
+}
+
+.operation-error {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-sm;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: $border-radius;
+    color: #dc2626;
+    font-size: 0.9rem;
+    margin-bottom: $spacing-sm;
+
+    &__icon {
+        font-size: 1.1rem;
+    }
+
+    &__message {
+        flex: 1;
+        font-weight: 500;
+    }
+
+    &__dismiss {
+        background: none;
+        border: none;
+        color: #dc2626;
+        cursor: pointer;
+        font-size: 1.2rem;
+        font-weight: bold;
+        padding: 0.2rem;
+        border-radius: 50%;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+    }
+}
+
+.error {
+    display: grid;
+    place-items: center;
+    gap: $spacing-sm;
+    border: 1px dashed $primary-color;
+    padding: 2rem;
+    border-radius: $border-radius;
 }
 
 @keyframes float {

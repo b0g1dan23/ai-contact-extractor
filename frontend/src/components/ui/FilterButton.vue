@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import filterIcon from '@/assets/icons/filter-icon.svg';
 import { ref, onMounted, onUnmounted } from 'vue';
-import { useContactExtractionConsumer } from '@/providers/contactExtractionProvider';
-import { ContactFilter } from '@/composables/useContactExtraction';
+import { useContactFilteringConsumer } from '@/providers/contactFilteringProvider';
+import { ContactFilter } from '@/types';
 
-const { toggleFilter, isFilterActive, activeFilters } = useContactExtractionConsumer();
+const { toggleFilter, isFilterActive, activeFilters } = useContactFilteringConsumer();
 
 const isOpen = ref(false);
 const dropdownRef = ref<HTMLElement>();
@@ -17,7 +17,6 @@ const handleFilterClick = (filterType: ContactFilter) => {
     toggleFilter(filterType);
 };
 
-// Close dropdown when clicking outside
 const handleClickOutside = (event: Event) => {
     if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
         isOpen.value = false;
@@ -173,7 +172,6 @@ onUnmounted(() => {
     }
 }
 
-// Dropdown transition
 .dropdown-enter-active,
 .dropdown-leave-active {
     transition: all 0.2s ease;

@@ -8,7 +8,7 @@ import { ContactSchema, type Contact, type CustomField } from '@/types';
 import { reactive, computed } from 'vue';
 import Button from './ui/Button.vue';
 import { useToastNotifications } from '@/utils/toast';
-import { useContactExtractionConsumer } from '@/providers/contactExtractionProvider';
+import { useContactOperationsConsumer } from '@/providers/contactOperationsProvider';
 import crossIcon from '@/assets/icons/cross.svg';
 import Loader from './ui/Loader.vue';
 
@@ -29,7 +29,7 @@ const initialCustomField: CustomField = {
 
 const inputData = reactive<Contact>({ ...initialInputData });
 const inputField = reactive<CustomField>({ ...initialCustomField });
-const { state, createContact } = useContactExtractionConsumer();
+const { state, createContact } = useContactOperationsConsumer();
 const { showErrorToast, showSuccessToast } = useToastNotifications();
 
 const isFormValid = computed(() => {
@@ -53,14 +53,12 @@ const handleRemoveCustomField = (index: number) => {
 const handleSubmit = async () => {
     try {
         const parsedData = ContactSchema.parse(inputData);
-        // TODO: Implement the logic to save the contact data
         await createContact(parsedData);
         Object.assign(inputData, { ...initialInputData });
         inputData.custom_fields = [];
 
         showSuccessToast('Contact added successfully!', 'Success');
     } catch (error) {
-        console.error('Validation failed:', error);
         showErrorToast('Please fill in all required fields correctly.', 'Validation Error');
         return;
     }

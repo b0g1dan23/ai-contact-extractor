@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import searchIcon from '@/assets/icons/search.svg';
-import { useContactExtractionConsumer } from '@/providers/contactExtractionProvider';
+import { useContactFilteringConsumer } from '@/providers/contactFilteringProvider';
 
-const { searchTerm } = useContactExtractionConsumer();
+const { searchTerm } = useContactFilteringConsumer();
 </script>
 <template>
     <div class="search">

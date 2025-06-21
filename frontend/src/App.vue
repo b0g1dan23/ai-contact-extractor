@@ -2,7 +2,7 @@
 import AppHeader from '@/components/AppHeader.vue';
 import HeroSection from '@/components/HeroSection.vue';
 import ContactInputSection from '@/components/ContactInputSection.vue';
-import { useContactExtractionProvider } from '@/providers/contactExtractionProvider';
+import { useContactOperationsProvider } from '@/providers/contactOperationsProvider';
 import AIExtraction from './components/AIExtraction.vue';
 import starIcon from "@/assets/icons/Star.png"
 import personIcon from "@/assets/icons/Person.png";
@@ -11,8 +11,15 @@ import ManualExtraction from '@/components/ManualExtraction.vue';
 import Toast from 'primevue/toast';
 import DisplayContacts from './components/DisplayContacts.vue';
 import FilterButton from './components/ui/FilterButton.vue';
+import { useContactFilteringProvider } from './providers/contactFilteringProvider';
+import { computed, onMounted } from 'vue';
 
-const { filteredContacts } = useContactExtractionProvider();
+const { state, loadContacts } = useContactOperationsProvider();
+const { filteredContacts } = useContactFilteringProvider(computed(() => state.contacts));
+
+onMounted(async () => {
+  await loadContacts();
+});
 </script>
 
 <template>

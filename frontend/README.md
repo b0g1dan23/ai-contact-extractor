@@ -5,9 +5,11 @@ A modern Vue 3 application for extracting contact information from text using AI
 ## 🚀 Features
 
 - **AI Contact Extraction**: Extract contacts from meeting notes
+- **Manual Contact Entry**: Add contacts with custom fields and validation
 - **Search & Filtering**: Real-time debounced search with filter by email/location
 - **Modern Vue 3**: Built with Composition API and TypeScript
 - **Provider Pattern**: State management with provide/inject
+- **Code Refactoring**: Modular architecture with separated concerns and clean code structure
 - **Accessibility**: WCAG compliant with proper ARIA attributes
 - **Animations**: Smooth CSS animations with reduced motion support
 
@@ -24,7 +26,7 @@ The following features and improvements are planned for upcoming releases:
 - [ ] **Keyboard Shortcuts**: Power user shortcuts for common actions
 
 ### Technical Improvements
-- [ ] **Error Boundaries**: Graceful error handling and recovery
+- [✅] **Error Boundaries**: Graceful error handling and recovery
 - [ ] **Loading States**: Skeleton screens and progress indicators
 - [ ] **Performance**: Virtual scrolling for large contact lists
 
@@ -39,25 +41,41 @@ The following features and improvements are planned for upcoming releases:
 src/
 ├── components/
 │   ├── ui/
-│   │   └── Button.vue           # Reusable button component
-│   ├── AppHeader.vue            # Application header
-│   ├── Card.vue                 # Animated card component
-│   ├── HeroSection.vue          # Hero banner section
-│   ├── AIExtraction.vue         # AI text input component
-│   └── ContactSection.vue       # Contact extraction UI
+│   │   ├── Button.vue              # Reusable button component
+│   │   ├── Loader.vue              # Loading spinner component
+│   │   ├── ErrorBoundary.vue       # Error boundary wrapper
+│   │   ├── FilterButton.vue        # Contact filter button
+│   │   └── Search.vue              # Search input component
+│   ├── AppHeader.vue               # Application header
+│   ├── HeroSection.vue             # Hero banner section
+│   ├── ContactInputSection.vue     # Section wrapper component
+│   ├── AIExtraction.vue            # AI text extraction interface
+│   ├── ManualExtraction.vue        # Manual contact entry form
+│   ├── DisplayContacts.vue         # Contact list with states
+│   └── ContactItem.vue             # Individual contact display
 ├── composables/
-│   └── useContactExtraction.ts  # Contact extraction logic
+│   ├── useContactOperations.ts     # CRUD operations logic
+│   └── useContactFiltering.ts      # Search and filter logic
 ├── providers/
-│   └── contactExtractionProvider.ts # Provider pattern implementation
+│   ├── contactOperationsProvider.ts    # Operations state provider
+│   └── contactFilteringProvider.ts     # Filtering state provider
+├── services/
+│   └── contactApi.ts               # API service layer
+├── types/
+│   └── index.ts                    # TypeScript definitions
+├── utils/
+│   └── toast.ts                    # Toast notification utilities
 └── assets/
-    ├── _variables.scss          # SCSS variables
-    └── base.scss               # Base styles
+    ├── _variables.scss             # SCSS variables
+    └── base.css                    # Base styles
 ```
 
 ### State Management
 Uses Vue's **provide/inject** pattern for clean state management:
-- `useContactExtractionProvider()` - Provides functionality
-- `useContactExtractionConsumer()` - Consumes functionality in child components
+- **contactOperationsProvider**: Manages contact CRUD operations, loading states, and errors
+- **contactFilteringProvider**: Handles search, filtering, and computed filtered results
+- `useContactOperationsConsumer()` - Consumes operations functionality in child components
+- `useContactFilteringConsumer()` - Consumes filtering functionality in child components
 
 ## 🎨 Design System
 

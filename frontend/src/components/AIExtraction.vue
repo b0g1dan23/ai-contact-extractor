@@ -2,7 +2,7 @@
 import { onMounted, onUnmounted, ref } from 'vue';
 import Button from '@/components/ui/Button.vue';
 import Loader from '@/components/ui/Loader.vue';
-import { useContactExtractionConsumer } from '@/providers/contactExtractionProvider';
+import { useContactOperationsConsumer } from '@/providers/contactOperationsProvider';
 import { useToastNotifications } from '@/utils/toast';
 
 /**
@@ -11,6 +11,10 @@ import { useToastNotifications } from '@/utils/toast';
 interface AIExtractionProps {
     placeholder?: string;
 }
+
+const props = withDefaults(defineProps<AIExtractionProps>(), {
+    placeholder: 'Today, I had an interview with Dustin & Andrei from HeyGov, their emails are dustin@heygov.com andrei@heygov.com'
+});
 
 const isMobile = ref<boolean>(false);
 
@@ -27,12 +31,9 @@ onUnmounted(() => {
     window.removeEventListener('resize', checkMobile);
 })
 
-const props = withDefaults(defineProps<AIExtractionProps>(), {
-    placeholder: 'Today, I had an interview with Dustin & Andrei from HeyGov, their emails are dustin@heygov.com andrei@heygov.com'
-});
 const { showSuccessToast, showErrorToast } = useToastNotifications();
 
-const { extractContacts, state } = useContactExtractionConsumer();
+const { extractContacts, state } = useContactOperationsConsumer();
 const aiText = ref<string>('');
 
 const handleExtract = async () => {
@@ -42,7 +43,6 @@ const handleExtract = async () => {
             aiText.value = '';
             showSuccessToast('Contacts extracted successfully!', 'Extraction Success');
         } catch (error) {
-            console.error('Failed to extract contacts:', error);
             showErrorToast('Failed to extract contacts. Please try again.', 'Extraction Error');
         }
     }
