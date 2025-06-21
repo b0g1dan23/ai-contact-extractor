@@ -1,15 +1,38 @@
 <script lang="ts" setup>
 import type { Contact } from '@/types';
-import locationIcon from '@/assets/icons/Location.svg';
-import phoneIcon from "@/assets/icons/phone.svg";
-import emailIcon from '@/assets/icons/mail.svg';
-import suitcaseIcon from '@/assets/icons/suitcase.svg';
-import hashtagIcon from "@/assets/icons/hashtag.svg"
 import Modal from './ui/Modal.vue';
-import { reactive } from 'vue';
+import { defineAsyncComponent, onMounted, reactive, ref } from 'vue';
 import Button from './ui/Button.vue';
-import Loader from './ui/Loader.vue';
 import { useContactOperationsConsumer } from '@/providers/contactOperationsProvider';
+
+const Loader = defineAsyncComponent(() =>
+    import('@/components/ui/Loader.vue')
+);
+
+const getIcon = (iconName: 'location' | 'phone' | 'email' | 'suitcase' | 'hashtag') => {
+    const icons = {
+        location: () => import("@/assets/icons/Location.svg"),
+        phone: () => import("@/assets/icons/phone.svg"),
+        email: () => import('@/assets/icons/mail.svg'),
+        suitcase: () => import('@/assets/icons/suitcase.svg'),
+        hashtag: () => import('@/assets/icons/hashtag.svg'),
+    };
+    return icons[iconName]?.();
+};
+
+const locationIcon = ref('');
+const phoneIcon = ref('');
+const emailIcon = ref('');
+const suitcaseIcon = ref('');
+const hashtagIcon = ref('');
+
+onMounted(async () => {
+    locationIcon.value = (await getIcon('location')).default;
+    phoneIcon.value = (await getIcon('phone')).default;
+    emailIcon.value = (await getIcon('email')).default;
+    suitcaseIcon.value = (await getIcon('suitcase')).default;
+    hashtagIcon.value = (await getIcon('hashtag')).default;
+})
 
 const { updateContact, state } = useContactOperationsConsumer();
 
@@ -105,7 +128,17 @@ const handleUpdateContact = async () => {
 .input__h3 {
     font-size: $font-size-h3-desktop;
     font-weight: $font-weight-bold;
-    color: $black-color !important;
+    color: var(--text-primary) !important;
+    background-color: transparent;
+    border: none;
+    padding: .2rem .4rem;
+    transition: all 0.2s ease;
+
+    &:focus {
+        outline: none;
+        background-color: var(--bg-tertiary);
+        border-radius: 0.2rem;
+    }
 }
 
 .btn__span {
@@ -117,6 +150,7 @@ const handleUpdateContact = async () => {
 .item {
     padding: 1rem;
     border-radius: $border-radius-sm;
+    background-color: var(--bg-primary);
     display: grid;
     gap: $spacing-sm;
 
@@ -135,9 +169,16 @@ const handleUpdateContact = async () => {
     & input {
         background-color: transparent;
         border: none;
-        color: $dark-gray-color;
+        color: var(--text-primary);
         font-weight: $font-weight-semibold;
         padding: .2rem .4rem;
+        transition: all 0.2s ease;
+
+        &:focus {
+            outline: none;
+            background-color: var(--bg-tertiary);
+            border-radius: 0.2rem;
+        }
     }
 
     &__actions {
@@ -199,20 +240,23 @@ const handleUpdateContact = async () => {
         gap: $spacing-sm;
 
         &__card {
-            background-color: $light-gray-color;
+            background-color: var(--bg-secondary);
             border-radius: .6rem;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 1px 4px var(--shadow-color);
             padding: .6rem .8rem;
             display: flex;
             gap: 1rem;
             align-items: center;
 
             & span {
-                color: $dark-gray-color;
+                color: var(--text-secondary);
                 font-weight: $font-weight-semibold;
             }
 
             &-custom {
-                background-color: $primary-light;
+                background-color: var(--primary-light);
+                border-color: var(--primary-color);
             }
         }
 

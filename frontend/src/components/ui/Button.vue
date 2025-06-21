@@ -38,9 +38,9 @@ const handleClick = (event: MouseEvent) => {
 
 .btn {
     border-radius: .4rem;
-    background-color: $primary-color;
+    background-color: var(--primary-color);
     padding: .8rem 1.4rem;
-    color: $white-color;
+    color: var(--bg-primary);
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;

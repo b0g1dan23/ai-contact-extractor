@@ -1,5 +1,9 @@
 .p-toast {
     &-message {
+        background: var(--bg-primary) !important;
+        border: 1px solid var(--card-border) !important;
+        box-shadow: 0 4px 12px var(--shadow-color) !important;
+
         &-content {
             display: flex;
             gap: $spacing-sm !important;
@@ -14,6 +18,8 @@
 
     &-summary {
         font-size: $font-size-text-desktop !important;
+        color: var(--text-primary) !important;
+        font-weight: $font-weight-semibold !important;
 
         @include respond-to('mobile') {
             font-size: $font-size-text-mobile !important;
@@ -22,9 +28,14 @@
 
     &-detail {
         font-size: 1rem !important;
+        color: var(--text-secondary) !important;
 
         @include respond-to('mobile') {
             font-size: 1rem !important;
         }
+    }
+
+    &-icon {
+        color: var(--text-primary) !important;
     }
 }

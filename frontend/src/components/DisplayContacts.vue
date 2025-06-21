@@ -3,8 +3,12 @@ import Search from './ui/Search.vue';
 import ContactItem from './ContactItem.vue';
 import { useContactFilteringConsumer } from '@/providers/contactFilteringProvider';
 import { useContactOperationsConsumer } from '@/providers/contactOperationsProvider';
-import Loader from './ui/Loader.vue';
 import Button from './ui/Button.vue';
+import { defineAsyncComponent } from 'vue';
+
+const Loader = defineAsyncComponent(() =>
+    import('@/components/ui/Loader.vue')
+);
 
 const { filteredContacts } = useContactFilteringConsumer();
 const { state, loadContacts } = useContactOperationsConsumer();
