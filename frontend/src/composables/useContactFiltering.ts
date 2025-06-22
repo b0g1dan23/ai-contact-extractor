@@ -1,5 +1,6 @@
 import { ref, computed, watch, type Ref } from 'vue';
-import { ContactFilter, type Contact } from '@/types';
+import { ContactFilter } from '@/types';
+import type { Contact } from '@/services/apiClient';
 
 export const useContactFiltering = (contacts: Ref<Contact[]>) => {
     const searchTerm = ref('');

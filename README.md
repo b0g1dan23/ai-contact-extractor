@@ -216,7 +216,29 @@ ADMIN_PASSWORD=your-super-secret-password
 
 ## Docker Compose
 
-> **Note:** Docker Compose support will be added soon for seamless multi-service development and deployment.
+Docker Compose is supported for local development and self-hosting. It will run both backend and frontend, and persist your SQLite database automatically.
+
+### Usage
+
+1. **Build and start all services:**
+   ```sh
+   docker compose up --build
+   ```
+   This will build and start both backend and frontend containers.
+
+2. **Access your app:**
+   - Frontend: [http://localhost:4173](http://localhost:4173)
+   - Backend API: [http://localhost:8080](http://localhost:8080)
+
+3. **Stop all services:**
+   ```sh
+   docker compose down
+   ```
+
+4. **Data persistence:**
+   - Your SQLite database is stored in a Docker volume (`sqlite_data`), so your data will survive container restarts and rebuilds.
+
+> **Note:** For cloud deployment (e.g. Railway), deploy backend and frontend as separate services and use a managed database (not SQLite).
 
 ---
 
