@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<CardProps>(), {
         <div class="card__header">
             <div class="card__top">
                 <div class="card__icon">
-                    <img :src="props.icon" :alt="`${props.heading} icon`" loading="lazy" />
+                    <img :src="props.icon" :alt="`${props.heading} icon`" loading="lazy" class="card__icon-img" />
                 </div>
                 <div class="card__text">
                     <h3>{{ props.heading }}</h3>
@@ -34,7 +34,7 @@ const props = withDefaults(defineProps<CardProps>(), {
 <style lang="scss" scoped>
 .card {
     border-radius: $border-radius-md;
-    border: 1px solid $light-gray-color;
+    border: 1px solid $dark-gray-color;
     display: grid;
     gap: $spacing-lg;
     padding: 1.6rem;

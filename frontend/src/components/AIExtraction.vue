@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { defineAsyncComponent, onMounted, onUnmounted, ref } from 'vue';
 import Button from '@/components/ui/Button.vue';
-import Loader from '@/components/ui/Loader.vue';
 import { useContactOperationsConsumer } from '@/providers/contactOperationsProvider';
 import { useToastNotifications } from '@/utils/toast';
 
@@ -15,6 +14,10 @@ interface AIExtractionProps {
 const props = withDefaults(defineProps<AIExtractionProps>(), {
     placeholder: 'Today, I had an interview with Dustin & Andrei from HeyGov, their emails are dustin@heygov.com andrei@heygov.com'
 });
+
+const Loader = defineAsyncComponent(() =>
+    import('@/components/ui/Loader.vue')
+);
 
 const isMobile = ref<boolean>(false);
 
@@ -80,20 +83,21 @@ const handleExtract = async () => {
         resize: none;
         font-size: $font-size-text-desktop;
         font-family: $font-family-primary;
-        color: $black-color;
+        color: var(--text-primary);
+        background-color: var(--input-bg);
         padding: 1.2rem 1rem;
         border-radius: $border-radius;
-        border: 1px solid $dark-gray-color;
+        border: 1px solid var(--input-border);
         transition: border-color 0.3s ease, box-shadow 0.3s ease;
 
         &:focus {
             outline: none;
-            border-color: $primary-color;
-            box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 99, 158, 0.1);
         }
 
         &::placeholder {
-            color: rgba($text-color, 0.6);
+            color: var(--text-muted);
         }
 
         @include respond-to('mobile') {

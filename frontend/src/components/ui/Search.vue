@@ -1,6 +1,19 @@
 <script lang="ts" setup>
-import searchIcon from '@/assets/icons/search.svg';
 import { useContactFilteringConsumer } from '@/providers/contactFilteringProvider';
+import { onMounted, ref } from 'vue';
+
+const getIcon = (iconName: 'search') => {
+    const icons = {
+        search: () => import('@/assets/icons/search.svg'),
+    };
+    return icons[iconName]?.();
+};
+
+const searchIcon = ref('');
+
+onMounted(async () => {
+    searchIcon.value = (await getIcon('search')).default;
+})
 
 const { searchTerm } = useContactFilteringConsumer();
 </script>
@@ -8,7 +21,7 @@ const { searchTerm } = useContactFilteringConsumer();
     <div class="search">
         <input type="text" name="search" id="search"
             placeholder="Search contacts by name, email, company, job title, or phone" v-model="searchTerm">
-        <img :src="searchIcon" alt="Search icon">
+        <img :src="searchIcon" alt="Search icon" class="search__icon">
     </div>
 </template>
 <style lang="scss" scoped>
@@ -20,6 +33,10 @@ const { searchTerm } = useContactFilteringConsumer();
         top: 50%;
         left: 1rem;
         transform: translateY(-50%);
+    }
+
+    &__icon {
+        filter: var(--icon-filter);
     }
 
     & input {

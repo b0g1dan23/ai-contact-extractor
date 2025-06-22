@@ -48,17 +48,46 @@ const emit = defineEmits<{
         left: 50%;
         transform: translate(-50%, -50%);
         max-width: 1080px;
+        max-height: 90vh;
         width: 100%;
         animation: dropIn .3s ease-in-out;
 
-        background-color: $white-color;
+        background-color: var(--bg-primary);
+        border: 1px solid var(--card-border);
         padding: 1.6rem;
         border-radius: $border-radius-sm;
+        box-shadow: 0 8px 32px var(--shadow-color);
+        overflow-y: auto;
+    }
+
+    &__content {
+        max-height: calc(90vh - 120px);
+        overflow-y: auto;
     }
 
     &__header {
         display: flex;
         justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    &__title {
+        color: var(--text-primary);
+        margin: 0;
+    }
+
+    &__close {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 50%;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+            background-color: var(--bg-tertiary);
+        }
     }
 }
 

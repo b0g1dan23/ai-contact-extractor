@@ -1,15 +1,45 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import locationIcon from '@/assets/icons/Location.svg';
-import phoneIcon from "@/assets/icons/phone.svg";
-import emailIcon from '@/assets/icons/mail.svg';
-import suitcaseIcon from '@/assets/icons/suitcase.svg';
-import hashtagIcon from "@/assets/icons/hashtag.svg"
-import editIcon from "@/assets/icons/Edit.svg"
-import trashIcon from "@/assets/icons/Trash.svg"
-import ContactEditModal from '@/components/ContactEditModal.vue';
+import { computed, ref, defineAsyncComponent, onMounted } from 'vue';
 import { useContactOperationsConsumer } from '@/providers/contactOperationsProvider';
 import { useToastNotifications } from '@/utils/toast';
+
+const getIcon = (iconName: 'location' | 'phone' | 'email' | 'suitcase' | 'hashtag' | 'edit' | 'trash') => {
+    const icons = {
+        location: () => import("@/assets/icons/Location.svg"),
+        phone: () => import("@/assets/icons/phone.svg"),
+        email: () => import('@/assets/icons/mail.svg'),
+        suitcase: () => import('@/assets/icons/suitcase.svg'),
+        hashtag: () => import('@/assets/icons/hashtag.svg'),
+        edit: () => import('@/assets/icons/Edit.svg'),
+        trash: () => import('@/assets/icons/Trash.svg'),
+    };
+    return icons[iconName]?.();
+};
+
+const locationIcon = ref('');
+const phoneIcon = ref('');
+const emailIcon = ref('');
+const suitcaseIcon = ref('');
+const hashtagIcon = ref('');
+const editIcon = ref('');
+const trashIcon = ref('');
+
+onMounted(async () => {
+    locationIcon.value = (await getIcon('location')).default;
+    phoneIcon.value = (await getIcon('phone')).default;
+    emailIcon.value = (await getIcon('email')).default;
+    suitcaseIcon.value = (await getIcon('suitcase')).default;
+    hashtagIcon.value = (await getIcon('hashtag')).default;
+    editIcon.value = (await getIcon('edit')).default;
+    trashIcon.value = (await getIcon('trash')).default;
+})
+
+const ContactEditModal = defineAsyncComponent({
+    loader: () => import('@/components/ContactEditModal.vue'),
+    loadingComponent: () => import('@/components/ui/Loader.vue'),
+    delay: 200,
+    timeout: 3000,
+});
 
 type ContactItemProps = {
     company?: string;
@@ -128,9 +158,12 @@ const handleRemoveContact = async () => {
 .item {
     padding: 1rem;
     border-radius: $border-radius-sm;
-    border: 1px solid $dark-gray-color;
+    border: 1px solid var(--card-border);
+    background-color: var(--bg-primary);
+    box-shadow: 0 2px 8px var(--shadow-color);
     display: grid;
     gap: $spacing-sm;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
 
     &__header {
         display: flex;
@@ -159,7 +192,17 @@ const handleRemoveContact = async () => {
         &__action {
             padding: .8rem;
             border-radius: .4rem;
-            border: 1px solid $dark-gray-color;
+            border: 1px solid var(--card-border);
+            background-color: var(--bg-secondary);
+            transition: background-color 0.2s ease;
+
+            &:hover {
+                background-color: var(--bg-tertiary);
+            }
+
+            &-edit {
+                filter: var(--icon-filter);
+            }
 
             &-delete {
                 filter: brightness(0) saturate(100%) invert(22%) sepia(55%) saturate(6109%) hue-rotate(348deg) brightness(98%) contrast(92%);
@@ -205,20 +248,23 @@ const handleRemoveContact = async () => {
         gap: $spacing-sm;
 
         &__card {
-            background-color: $light-gray-color;
+            background-color: var(--bg-secondary);
             border-radius: .6rem;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 1px 4px var(--shadow-color);
             padding: .6rem .8rem;
             display: flex;
             gap: 1rem;
             align-items: center;
 
             & span {
-                color: $dark-gray-color;
+                color: var(--text-secondary);
                 font-weight: $font-weight-semibold;
             }
 
             &-custom {
-                background-color: $primary-light;
+                background-color: var(--primary-light);
+                border-color: var(--primary-color);
             }
         }
 

@@ -5,12 +5,27 @@
  */
 
 import { ContactSchema, type Contact, type CustomField } from '@/types';
-import { reactive, computed } from 'vue';
+import { reactive, computed, ref, onMounted, defineAsyncComponent } from 'vue';
 import Button from './ui/Button.vue';
 import { useToastNotifications } from '@/utils/toast';
 import { useContactOperationsConsumer } from '@/providers/contactOperationsProvider';
-import crossIcon from '@/assets/icons/cross.svg';
-import Loader from './ui/Loader.vue';
+
+const Loader = defineAsyncComponent(() =>
+    import('@/components/ui/Loader.vue')
+);
+
+const getIcon = (iconName: 'cross') => {
+    const icons = {
+        cross: () => import('@/assets/icons/cross.svg'),
+    };
+    return icons[iconName]?.();
+};
+
+const crossIcon = ref('');
+
+onMounted(async () => {
+    crossIcon.value = (await getIcon('cross')).default;
+})
 
 const initialInputData: Contact = {
     name: '',
@@ -98,9 +113,9 @@ const handleSubmit = async () => {
                 <div class="manual__fieldValues__text">
                     <span class="manual__fieldValues__heading">{{ field.label }}:</span>
                     <span>{{ field.value }}</span>
-                </div>
-                <button class="manual__fieldValues__remove">
-                    <img :src="crossIcon" alt="Cross closing icon" @click="handleRemoveCustomField(index)" />
+                </div> <button class="manual__fieldValues__remove">
+                    <img :src="crossIcon" alt="Cross closing icon" class="manual__fieldValues__remove-icon"
+                        @click="handleRemoveCustomField(index)" />
                 </button>
             </div>
         </div>
@@ -194,6 +209,10 @@ const handleSubmit = async () => {
                 &:hover {
                     filter: invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%);
                 }
+            }
+
+            &-icon {
+                filter: var(--icon-filter);
             }
         }
     }

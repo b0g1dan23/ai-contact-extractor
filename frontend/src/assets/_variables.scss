@@ -6,18 +6,57 @@
 // COLORS
 // =============================================================================
 
+// Static colors (don't change with theme)
 $primary-color: #1A639E;
 $primary-light: rgba($primary-color, 0.1);
 
-$dark-gray-color: #737373;
-$light-gray-color: #f4f4f4;
+// CSS Custom Properties for theming
+:root {
+    // Light theme (default)
+    --bg-primary: #ffffff;
+    --bg-secondary: #f4f4f4;
+    --bg-tertiary: #fafafa;
+    --input-bg: #ffffff;
+    --input-border: #737373;
 
-$black-color: #000;
-$white-color: #fff;
+    --text-primary: #000000;
+    --text-secondary: #737373;
+    --text-muted: #999999;
+    --border-color: #737373;
+    --card-border: #737373;
+    --shadow-color: rgba(115, 115, 115, 0.1);
+    --icon-filter: none;
+
+    --primary-color: #{$primary-color};
+    --primary-light: #{$primary-light};
+}
+
+// Dark theme
+[data-theme="dark"] {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-tertiary: #353535;
+    --input-bg: #2d2d2d;
+    --input-border: #404040;
+
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --text-muted: #888888;
+    --border-color: #404040;
+    --card-border: #404040;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --icon-filter: invert(1);
+}
+
+// Backward compatibility (gradually replace these)
+$dark-gray-color: var(--text-secondary);
+$light-gray-color: var(--bg-secondary);
+$black-color: var(--text-primary);
+$white-color: var(--bg-primary);
 
 // Text Colors
-$text-color: $dark-gray-color;
-$text-heading-color: $black-color;
+$text-color: var(--text-secondary);
+$text-heading-color: var(--text-primary);
 
 // =============================================================================
 // TYPOGRAPHY
@@ -96,7 +135,7 @@ $border-radius-md: 1.2rem;
 // SHADOWS
 // =============================================================================
 
-$shadow: 0 10px 15px 0 rgba($dark-gray-color, 0.1);
+$shadow: 0 10px 15px 0 rgba($dark-gray-color, 1);
 
 // Mixins
 @mixin respond-to($breakpoint) {
