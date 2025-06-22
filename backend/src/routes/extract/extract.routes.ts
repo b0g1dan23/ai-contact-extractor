@@ -16,7 +16,7 @@ export const extractFromTextRoute = createRoute({
         }), "Text to extract contact informations from")
     }, responses: {
         [OK]: jsonContent(z.array(contactSelectSchema.merge(z.object({
-            custom_fields: z.array(customFieldsSelectSchema).optional()
+            custom_fields: z.array(customFieldsSelectSchema)
         }))), "Contact informations extracted from text"),
         [UNPROCESSABLE_ENTITY]: jsonContent(z.object({
             error: z.string().default("Invalid input or extraction failed")

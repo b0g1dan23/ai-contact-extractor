@@ -2,6 +2,7 @@
 import { computed, ref, defineAsyncComponent, onMounted } from 'vue';
 import { useContactOperationsConsumer } from '@/providers/contactOperationsProvider';
 import { useToastNotifications } from '@/utils/toast';
+import type { Contact } from '@/services/apiClient';
 
 const getIcon = (iconName: 'location' | 'phone' | 'email' | 'suitcase' | 'hashtag' | 'edit' | 'trash') => {
     const icons = {
@@ -41,24 +42,10 @@ const ContactEditModal = defineAsyncComponent({
     timeout: 3000,
 });
 
-type ContactItemProps = {
-    company?: string;
-    location?: string;
-    phone?: string;
-    job_title?: string;
-    custom_fields: Array<{
-        label: string;
-        value: string;
-    }>;
-} & (
-        | { name: string; email?: string }
-        | { email: string; name?: string }
-    );
-
 const isOpened = ref<boolean>(false);
-const props = defineProps<{ contact: ContactItemProps, index: number }>();
+const props = defineProps<{ contact: Contact, index: number }>();
 const modalOpened = ref<boolean>(false);
-const { removeContact } = useContactOperationsConsumer();
+const { deleteContact } = useContactOperationsConsumer();
 const { showErrorToast, showSuccessToast } = useToastNotifications();
 
 const initial = computed(() => {
@@ -71,8 +58,8 @@ const handleToggleModal = () => {
     modalOpened.value = !modalOpened.value;
 }
 
-const handleRemoveContact = async () => {
-    const deletionResult = removeContact(props.index);
+const handleDeleteContact = async () => {
+    const deletionResult = await deleteContact(props.contact.id);
 
     if (deletionResult.success) {
         showSuccessToast('Contact removed successfully!', 'Deletion Success');
@@ -101,7 +88,7 @@ const handleRemoveContact = async () => {
                 <button class="item__actions__action" @click.stop="handleToggleModal">
                     <img :src="editIcon" alt="Edit icon" class="item__actions__action-edit" />
                 </button>
-                <button class="item__actions__action" @click.stop="handleRemoveContact">
+                <button class="item__actions__action" @click.stop="handleDeleteContact">
                     <img :src="trashIcon" alt="Trash icon" class="item__actions__action-delete" />
                 </button>
             </div>

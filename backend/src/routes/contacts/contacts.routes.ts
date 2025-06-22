@@ -14,7 +14,7 @@ export const getContactsRoute = createRoute({
     tags: ["Contacts"],
     responses: {
         [OK]: jsonContent(z.array(contactSelectSchema.merge(z.object({
-            custom_fields: z.array(customFieldsSelectSchema).optional()
+            custom_fields: z.array(customFieldsSelectSchema)
         }))), "List of contacts retrieved successfully"),
         [INTERNAL_SERVER_ERROR]: jsonContent(z.object({ error: z.string().default('Internal server error') }), "Internal server error"),
     }

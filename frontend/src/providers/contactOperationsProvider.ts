@@ -1,14 +1,15 @@
 import { provide, inject, type InjectionKey } from 'vue';
 import { useContactOperations } from '@/composables/useContactOperations';
-import type { Contact, ContactExtractionState, ContactOperationResult } from '@/types';
+import type { ContactExtractionState, ContactOperationResult } from '@/types';
+import type { Contact, ContactInput } from '@/services/apiClient';
 
 export interface ContactOperationsProvider {
     state: ContactExtractionState;
     loadContacts: () => Promise<ContactOperationResult>;
     extractContacts: (text: string) => Promise<ContactOperationResult>;
-    createContact: (contact: Contact) => Promise<ContactOperationResult>;
-    removeContact: (id: number) => ContactOperationResult;
-    updateContact: (contact: Contact, contactID: number) => Promise<ContactOperationResult>;
+    createContact: (contact: ContactInput) => Promise<ContactOperationResult>;
+    deleteContact: (id: string) => Promise<ContactOperationResult>;
+    updateContact: (contact: Contact, contactID: string) => Promise<ContactOperationResult>;
 }
 
 export const ContactOperationsKey: InjectionKey<ContactOperationsProvider> = Symbol('contactOperations');

@@ -1,5 +1,6 @@
 import { reactive } from 'vue';
-import type { Contact, ContactExtractionState, ContactOperationResult } from '@/types';
+import type { ContactExtractionState, ContactOperationResult } from '@/types';
+import type { Contact, ContactInput } from '@/services/apiClient';
 import { ContactApiService } from '@/services/contactApi';
 
 export const useContactOperations = () => {
@@ -67,7 +68,7 @@ export const useContactOperations = () => {
         }
     };
 
-    const createContact = async (contact: Contact): Promise<ContactOperationResult> => {
+    const createContact = async (contact: ContactInput): Promise<ContactOperationResult> => {
         if (!contact.name && !contact.email) {
             return {
                 success: false,
@@ -101,41 +102,35 @@ export const useContactOperations = () => {
         }
     };
 
-    const removeContact = (index: number): ContactOperationResult => {
-        try {
-            if (index >= 0 && index < state.contacts.length) {
-                const removedContact = state.contacts.splice(index, 1)[0];
-                return {
-                    success: true,
-                    data: removedContact
-                };
-            }
-            return {
-                success: false,
-                error: 'Invalid contact index'
-            };
-        } catch (error) {
-            return {
-                success: false,
-                error: 'Failed to remove contact'
-            };
-        }
-    };
-
-    const updateContact = async (contact: Contact, contactID: number): Promise<ContactOperationResult> => {
+    const deleteContact = async (id: string): Promise<ContactOperationResult> => {
         try {
             state.isLoading = true;
             state.error = null;
-            const updatedContact = await ContactApiService.updateContact(contact, contactID);
-            // TODO: Update the contact in the state
-            // For simplicity, we will randomly update a contact in the state
-            const index = Math.random() * state.contacts.length;
-            if (index !== -1) {
-                state.contacts[index] = updatedContact;
-            }
+            await ContactApiService.deleteContact(id);
+            state.contacts = state.contacts.filter(contact => contact.id !== id);
             return {
                 success: true,
-                data: updatedContact
+                error: 'Contact deleted successfully'
+            };
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Failed to remove contact';
+            state.error = errorMessage;
+            return {
+                success: false,
+                error: errorMessage
+            }
+        } finally {
+            state.isLoading = false;
+        }
+    };
+
+    const updateContact = async (contact: Contact, contactID: string): Promise<ContactOperationResult> => {
+        try {
+            state.isLoading = true;
+            state.error = null;
+            await ContactApiService.updateContact(contact, contactID);
+            return {
+                success: true,
             };
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'Failed to update contact';
@@ -155,7 +150,7 @@ export const useContactOperations = () => {
         loadContacts,
         extractContacts,
         createContact,
-        removeContact,
+        deleteContact,
         updateContact
     };
 };

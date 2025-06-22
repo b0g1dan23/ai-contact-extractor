@@ -5,6 +5,7 @@ import configureOpenAPI from './lib/configure-open-api';
 import extractRoutes from './routes/extract/extract.index';
 import index from './routes/index.route';
 import contactsRouter from './routes/contacts/contacts.index';
+import configureCORS from './lib/configure-cors';
 
 expand(config());
 
@@ -16,6 +17,7 @@ const routes = [
     contactsRouter
 ]
 
+configureCORS(app);
 configureOpenAPI(app);
 routes.forEach(route => app.route("/api/v1/", route));
 

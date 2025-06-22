@@ -1,6 +1,7 @@
 import { provide, inject, type InjectionKey, type Ref, type ComputedRef } from 'vue';
 import { useContactFiltering } from '@/composables/useContactFiltering';
-import type { Contact, ContactFilter } from '@/types';
+import type { ContactFilter } from '@/types';
+import type { Contact } from '@/services/apiClient';
 
 export interface ContactFilteringProvider {
     searchTerm: Ref<string>;

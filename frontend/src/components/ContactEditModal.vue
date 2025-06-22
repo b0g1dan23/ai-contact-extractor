@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import type { Contact } from '@/types';
+import type { Contact } from '@/services/apiClient';
 import Modal from './ui/Modal.vue';
 import { defineAsyncComponent, onMounted, reactive, ref } from 'vue';
 import Button from './ui/Button.vue';
 import { useContactOperationsConsumer } from '@/providers/contactOperationsProvider';
+import { useToastNotifications } from '@/utils/toast';
 
 const Loader = defineAsyncComponent(() =>
     import('@/components/ui/Loader.vue')
@@ -35,6 +36,7 @@ onMounted(async () => {
 })
 
 const { updateContact, state } = useContactOperationsConsumer();
+const { showSuccessToast, showErrorToast } = useToastNotifications();
 
 const emit = defineEmits<{
     handleClose: [];
@@ -49,10 +51,12 @@ const editedContact = reactive<Contact>({ ...props.contact });
 
 const handleUpdateContact = async () => {
     try {
-        await updateContact(editedContact, 1);
+        await updateContact(editedContact, props.contact.id);
+        Object.assign(props.contact, editedContact);
+        showSuccessToast('Contact updated successfully!', 'Update Success');
         emit('handleClose');
     } catch (error) {
-        console.error('Failed to update contact:', error);
+        showErrorToast(error instanceof Error ? error.message : 'Failed to update contact. Please try again.', 'Update Error');
     }
 };
 </script>

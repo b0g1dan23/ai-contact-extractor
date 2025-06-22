@@ -4,7 +4,8 @@
  * Features form validation, custom fields management, and seamless integration with the contact extraction system
  */
 
-import { ContactSchema, type Contact, type CustomField } from '@/types';
+import { ContactSchema, type CustomField } from '@/types';
+import type { ContactInput } from '@/services/apiClient';
 import { reactive, computed, ref, onMounted, defineAsyncComponent } from 'vue';
 import Button from './ui/Button.vue';
 import { useToastNotifications } from '@/utils/toast';
@@ -27,13 +28,13 @@ onMounted(async () => {
     crossIcon.value = (await getIcon('cross')).default;
 })
 
-const initialInputData: Contact = {
-    name: '',
-    email: '',
-    company: '',
-    location: '',
-    phone: '',
-    job_title: '',
+const initialInputData: ContactInput = {
+    name: null,
+    email: null,
+    company: null,
+    location: null,
+    phone: null,
+    job_title: null,
     custom_fields: [],
 }
 
@@ -42,7 +43,7 @@ const initialCustomField: CustomField = {
     value: '',
 }
 
-const inputData = reactive<Contact>({ ...initialInputData });
+const inputData = reactive<ContactInput>({ ...initialInputData });
 const inputField = reactive<CustomField>({ ...initialCustomField });
 const { state, createContact } = useContactOperationsConsumer();
 const { showErrorToast, showSuccessToast } = useToastNotifications();

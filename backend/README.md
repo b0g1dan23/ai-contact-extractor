@@ -452,3 +452,31 @@ The API provides structured error responses:
 ---
 
 **Built with ❤️ using modern TypeScript stack**
+
+## 🌐 CORS Configuration
+
+CORS (Cross-Origin Resource Sharing) is enabled for API routes to allow frontend applications (e.g., React, Vite, etc.) to communicate with the backend securely during development and production.
+
+### How CORS is Configured
+
+- CORS is configured in `src/lib/configure-cors.ts` using the Hono CORS middleware.
+- Only requests from allowed origins (e.g., `http://localhost:5173`, `http://localhost:4173`) are permitted by default.
+- The CORS middleware is applied to all `/api/v1/*` routes.
+
+**Example:**
+```typescript
+import configureCORS from './lib/configure-cors';
+
+const app = createApp();
+configureCORS(app); // <-- Add this before defining your routes
+```
+
+**To allow your frontend to access the backend:**
+- Make sure your frontend's URL is in the `allowedOrigins` array in `configure-cors.ts`.
+- If you need to allow additional origins, add them to the array.
+- For production, set the allowed origins to your deployed frontend domain(s).
+
+**CORS Troubleshooting:**
+- If you see CORS errors in the browser, check that the origin matches exactly (including protocol and port).
+- Ensure the CORS middleware is called before your route definitions in `app.ts`.
+- For local development, you can temporarily allow all origins by setting `origin: '*'` (not recommended for production).

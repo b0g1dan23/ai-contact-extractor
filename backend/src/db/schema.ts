@@ -50,7 +50,7 @@ export const createCustomFieldSchema = createInsertSchema(customFieldsTable, {
     .pick({ label: true, value: true })
 
 export const createContactWithCustomFieldsSchema = createContactSchema.merge(z.object({
-    custom_fields: z.array(createCustomFieldSchema).optional()
+    custom_fields: z.array(createCustomFieldSchema)
 }))
 
 export const updateContactWithCustomFieldsSchema = createContactWithCustomFieldsSchema.partial()

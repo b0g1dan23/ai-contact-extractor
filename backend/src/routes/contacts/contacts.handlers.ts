@@ -7,8 +7,29 @@ import { eq } from "drizzle-orm";
 
 export const getContactsHandler: AppRouteHandler<GetContactsRoute> = async (c) => {
     try {
-        const res = await db.select().from(contactsTable);
-        return c.json(res, OK);
+        const res = await db.select().from(contactsTable).leftJoin(customFieldsTable, eq(contactsTable.id, customFieldsTable.contact_id)).execute();
+
+        const contactsMap = new Map<string, any>();
+
+        res.forEach(row => {
+            const contact = row.contacts_table;
+            const customField = row.custom_fields_table;
+
+            if (!contactsMap.has(contact.id)) {
+                contactsMap.set(contact.id, {
+                    ...contact,
+                    custom_fields: []
+                });
+            }
+
+            if (customField && customField.id) {
+                contactsMap.get(contact.id)!.custom_fields.push(customField);
+            }
+        });
+
+        const contactsWithCustomFields = Array.from(contactsMap.values());
+
+        return c.json(contactsWithCustomFields, OK);
     } catch (error) {
         console.error('Error fetching contacts:', error);
         return c.json({ error: 'Failed to fetch contacts' }, INTERNAL_SERVER_ERROR);
