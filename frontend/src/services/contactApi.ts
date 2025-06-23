@@ -1,5 +1,6 @@
 import type { Contact, ContactInput, ExtractedContact } from '@/services/apiClient';
 import { apiClient } from './apiClient';
+import env from '@/env';
 
 // const mockContacts: Contact[] = [
 //     {
@@ -89,7 +90,7 @@ export class ContactApiService {
     }
 
     static async updateContact(contact: Contact, contactID: string): Promise<void> {
-        const res = await fetch(`${import.meta.env.VITE_APPI_URL}/api/v1/contacts/${contactID}`, {
+        const res = await fetch(`${env.VITE_API_URL}/api/v1/contacts/${contactID}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -104,7 +105,7 @@ export class ContactApiService {
     }
 
     static async deleteContact(contactId: string): Promise<void> {
-        const result = await fetch(`${import.meta.env.VITE_APPI_URL}/api/v1/contacts/${contactId}`, {
+        const result = await fetch(`${env.VITE_API_URL}/api/v1/contacts/${contactId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'

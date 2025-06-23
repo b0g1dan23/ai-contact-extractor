@@ -1,8 +1,9 @@
 import createClient from 'openapi-fetch';
 import type { paths } from '@/types/api';
+import env from '@/env';
 
 export const apiClient = createClient<paths>({
-    baseUrl: 'http://localhost:8080'
+    baseUrl: env.VITE_API_URL || 'http://localhost:8080',
 });
 
 export type Contact = paths['/api/v1/contacts']['get']['responses']['200']['content']['application/json'][0];

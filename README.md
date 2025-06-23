@@ -220,23 +220,36 @@ Docker Compose is supported for local development and self-hosting. It will run 
 
 ### Usage
 
-1. **Build and start all services:**
+1. **Set environment variables:**
+   - Create a `.env` file in the project root (or set these in your deployment environment) with the following content:
+     ```env
+     ADMIN_USERNAME=your-admin-username
+     ADMIN_PASSWORD=your-admin-password
+     LOG_LEVEL=info
+     DB_URL=file:./your-path-to-db.db
+     OPENAI_API_KEY=your-openai-key
+
+     VITE_API_URL=http://backend-endpoint
+     ```
+   - These are required for the backend and frontend to function correctly.
+
+2. **Build and start all services:**
    ```sh
    docker compose up --build
    ```
    This will build and start both backend and frontend containers.
 
-2. **Access your app:**
+3. **Access your app:**
    - Frontend: [http://localhost:4173](http://localhost:4173)
    - Backend API: [http://localhost:8080](http://localhost:8080)
 
-3. **Stop all services:**
+4. **Stop all services:**
    ```sh
    docker compose down
    ```
 
-4. **Data persistence:**
-   - Your SQLite database is stored in a Docker volume (`sqlite_data`), so your data will survive container restarts and rebuilds.
+5. **Data persistence:**
+   - Your SQLite database is stored in a Docker volume, so your data will survive container restarts and rebuilds.
 
 > **Note:** For cloud deployment (e.g. Railway), deploy backend and frontend as separate services and use a managed database (not SQLite).
 

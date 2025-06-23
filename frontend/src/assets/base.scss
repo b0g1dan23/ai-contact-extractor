@@ -89,6 +89,12 @@ header {
   }
 }
 
+header {
+  @include respond-to('mobile') {
+    padding: 1rem 2rem;
+  }
+}
+
 textarea,
 input,
 select,
