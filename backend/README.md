@@ -100,10 +100,6 @@ DB_URL=file:./local.db
 
 # OpenAI Configuration (Required)
 OPENAI_API_KEY=your-openai-api-key-here
-
-# Admin Access (for protected routes)
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=your-super-secret-password
 ```
 
 ## 📡 API Endpoints

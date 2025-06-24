@@ -205,8 +205,6 @@ PORT=8080
 LOG_LEVEL=info
 DB_URL=file:./local.db
 OPENAI_API_KEY=your-openai-api-key
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=your-super-secret-password
 ```
 
 **Frontend:**  
@@ -223,9 +221,8 @@ Docker Compose is supported for local development and self-hosting. It will run 
 1. **Set environment variables:**
    - Create a `.env` file in the project root (or set these in your deployment environment) with the following content:
      ```env
-     ADMIN_USERNAME=your-admin-username
-     ADMIN_PASSWORD=your-admin-password
      LOG_LEVEL=info
+     PORT=8080
      DB_URL=file:./your-path-to-db.db
      OPENAI_API_KEY=your-openai-key
 
@@ -237,11 +234,11 @@ Docker Compose is supported for local development and self-hosting. It will run 
    ```sh
    docker compose up --build
    ```
-   This will build and start both backend and frontend containers.
+   This will build and start backend, frontend, and nginx proxy containers.
 
 3. **Access your app:**
-   - Frontend: [http://localhost:4173](http://localhost:4173)
-   - Backend API: [http://localhost:8080](http://localhost:8080)
+   - Frontend: [http://localhost:5757]
+   - Backend API: [http://localhost:5757/api]
 
 4. **Stop all services:**
    ```sh
