@@ -163,11 +163,11 @@ bun run dev
 | Method | Endpoint                | Description                        |
 |--------|-------------------------|------------------------------------|
 | GET    | `/`                     | Health check                       |
-| POST   | `/api/v1/extract/text`  | Extract contacts from text         |
-| GET    | `/api/v1/contacts`      | List all contacts                  |
-| POST   | `/api/v1/contacts`      | Create a new contact               |
-| PUT    | `/api/v1/contacts/:id`  | Update a contact                   |
-| DELETE | `/api/v1/contacts/:id`  | Delete a contact                   |
+| POST   | `/v1/extract/text`  | Extract contacts from text         |
+| GET    | `/v1/contacts`      | List all contacts                  |
+| POST   | `/v1/contacts`      | Create a new contact               |
+| PUT    | `/v1/contacts/:id`  | Update a contact                   |
+| DELETE | `/v1/contacts/:id`  | Delete a contact                   |
 
 ---
 

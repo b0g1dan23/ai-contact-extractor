@@ -5,8 +5,8 @@ import { expand } from 'dotenv-expand';
 expand(config());
 
 const EnvSchema = z.object({
-    NODE_ENV: z.string().default('development'),
-    PORT: z.coerce.number().default(8080),
+    NODE_ENV: z.string(),
+    PORT: z.coerce.number(),
     LOG_LEVEL: z.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal']),
     DB_URL: z.string(),
     ADMIN_USERNAME: z.string().min(1),
@@ -28,7 +28,6 @@ let env: envType;
 try {
     env = EnvSchema.parse(process.env);
 } catch (err) {
-    console.log(env.DB_URL)
     const e = err as ZodError;
     console.error("Invalid ENV: ");
     console.error(e.flatten().fieldErrors);

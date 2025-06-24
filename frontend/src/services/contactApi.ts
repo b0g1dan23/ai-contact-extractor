@@ -1,5 +1,5 @@
 import type { Contact, ContactInput, ExtractedContact } from '@/services/apiClient';
-import { apiClient } from './apiClient';
+import { apiClient } from '@/services/apiClient';
 import env from '@/env';
 
 // const mockContacts: Contact[] = [
@@ -53,7 +53,7 @@ import env from '@/env';
 
 export class ContactApiService {
     static async fetchContacts(): Promise<Contact[]> {
-        const res = await apiClient.GET('/api/v1/contacts');
+        const res = await apiClient.GET('/v1/contacts');
         if (res.error) {
             throw new Error(res.error.error);
         }
@@ -62,7 +62,7 @@ export class ContactApiService {
     }
 
     static async createContact(contact: ContactInput): Promise<Contact> {
-        const result = await apiClient.POST('/api/v1/contacts', {
+        const result = await apiClient.POST('/v1/contacts', {
             body: contact
         })
 
@@ -78,7 +78,7 @@ export class ContactApiService {
     }
 
     static async extractContactsFromText(text: string): Promise<ExtractedContact[]> {
-        const result = await apiClient.POST('/api/v1/extract/text', {
+        const result = await apiClient.POST('/v1/extract/text', {
             body: { text }
         })
 
@@ -90,7 +90,7 @@ export class ContactApiService {
     }
 
     static async updateContact(contact: Contact, contactID: string): Promise<void> {
-        const res = await fetch(`${env.VITE_API_URL}/api/v1/contacts/${contactID}`, {
+        const res = await fetch(`${env.VITE_API_URL}/v1/contacts/${contactID}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -105,7 +105,7 @@ export class ContactApiService {
     }
 
     static async deleteContact(contactId: string): Promise<void> {
-        const result = await fetch(`${env.VITE_API_URL}/api/v1/contacts/${contactId}`, {
+        const result = await fetch(`${env.VITE_API_URL}/v1/contacts/${contactId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'

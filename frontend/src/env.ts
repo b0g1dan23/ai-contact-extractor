@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const EnvSchema = z.object({
-    VITE_API_URL: z.string().url('Invalid API URL'),
+    VITE_API_URL: z.string(),
 });
 
 type Env = z.infer<typeof EnvSchema>;

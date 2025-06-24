@@ -115,16 +115,16 @@ ADMIN_PASSWORD=your-super-secret-password
 | `GET` | `/` | Health check |
 | `GET` | `/doc` | OpenAPI JSON specification |
 | `GET` | `/reference` | Interactive API documentation |
-| `GET` | `/api/v1` | Welcome screen |
-| `POST` | `/api/v1/extract/text` | **Extract contacts from text** |
-| `GET` | `/api/v1/contacts` | Get all contacts |
-| `POST` | `/api/v1/contacts` | Create a new contact |
-| `PUT` | `/api/v1/contacts/:id` | Update an existing contact |
-| `DELETE` | `/api/v1/contacts/:id` | Delete a contact |
+| `GET` | `/v1` | Welcome screen |
+| `POST` | `/v1/extract/text` | **Extract contacts from text** |
+| `GET` | `/v1/contacts` | Get all contacts |
+| `POST` | `/v1/contacts` | Create a new contact |
+| `PUT` | `/v1/contacts/:id` | Update an existing contact |
+| `DELETE` | `/v1/contacts/:id` | Delete a contact |
 
 ### Extract Contacts
 
-**Endpoint:** `POST /api/v1/extract/text`
+**Endpoint:** `POST /v1/extract/text`
 
 **Request Body:**
 ```json
@@ -158,7 +158,7 @@ ADMIN_PASSWORD=your-super-secret-password
 ### Contact Management
 
 #### Get All Contacts
-**Endpoint:** `GET /api/v1/contacts`
+**Endpoint:** `GET /v1/contacts`
 
 **Response:**
 ```json
@@ -188,7 +188,7 @@ ADMIN_PASSWORD=your-super-secret-password
 ```
 
 #### Create New Contact
-**Endpoint:** `POST /api/v1/contacts`
+**Endpoint:** `POST /v1/contacts`
 
 **Request Body:**
 ```json
@@ -220,7 +220,7 @@ ADMIN_PASSWORD=your-super-secret-password
 - Each custom field must have `label` and `value` (both required)
 
 #### Update Contact
-**Endpoint:** `PUT /api/v1/contacts/:id`
+**Endpoint:** `PUT /v1/contacts/:id`
 
 **Request Body:** (All fields optional)
 ```json
@@ -231,7 +231,7 @@ ADMIN_PASSWORD=your-super-secret-password
 ```
 
 #### Delete Contact
-**Endpoint:** `DELETE /api/v1/contacts/:id`
+**Endpoint:** `DELETE /v1/contacts/:id`
 
 **Response:**
 ```json
@@ -461,7 +461,7 @@ CORS (Cross-Origin Resource Sharing) is enabled for API routes to allow frontend
 
 - CORS is configured in `src/lib/configure-cors.ts` using the Hono CORS middleware.
 - Only requests from allowed origins (e.g., `http://localhost:5173`, `http://localhost:4173`) are permitted by default.
-- The CORS middleware is applied to all `/api/v1/*` routes.
+- The CORS middleware is applied to all `/v1/*` routes.
 
 **Example:**
 ```typescript

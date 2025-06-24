@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/api/v1/": {
+    "/v1/": {
         parameters: {
             query?: never;
             header?: never;
@@ -42,7 +42,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/extract/text": {
+    "/v1/extract/text": {
         parameters: {
             query?: never;
             header?: never;
@@ -118,7 +118,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/contacts": {
+    "/v1/contacts": {
         parameters: {
             query?: never;
             header?: never;
@@ -291,7 +291,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/contacts/:id": {
+    "/v1/contacts/:id": {
         parameters: {
             query?: never;
             header?: never;

@@ -2,9 +2,9 @@ import { AppOpenAPI } from "@/types";
 import { cors } from "hono/cors";
 
 const configureCORS = (app: AppOpenAPI) => {
-    const allowedOrigins = ['http://localhost:5173', "http://localhost:4173"];
+    const allowedOrigins = ["http://localhost:5757", "https://ai-extraction-dev.boge.dev", "https://ai-extraction.boge.dev"];
 
-    app.use("/api/v1/*", cors({
+    app.use("/*", cors({
         origin: (origin) => {
             if (!origin) {
                 return null;

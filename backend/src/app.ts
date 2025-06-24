@@ -19,7 +19,7 @@ const routes = [
 
 configureCORS(app);
 configureOpenAPI(app);
-routes.forEach(route => app.route("/api/v1/", route));
+routes.forEach(route => app.route("/v1/", route));
 
 app.get('/', c => {
     return c.json({ message: 'Hello, World!' }, 200);
